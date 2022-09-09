@@ -1,0 +1,115 @@
+<Dashboard>:
+    name: "dashboard"
+
+    FitImage:
+        source: get_path(os.path.join("assets", "bg.png"))
+        mipmap: True
+        opacity: 0.2
+
+    AnchorLayout:
+
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing: dp(20)
+            padding: dp(20)
+            size_hint_max_x: dp(1000)
+            size_hint_max_y: dp(690)
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                size_hint_min_y: dp(169)
+                spacing: dp(30)
+
+                MDAnchorLayout:
+                    padding: dp(20)
+                    md_bg_color: [.05, .05, .05, .069]
+
+                    BaseCard:
+                        size_hint: 1, 1
+                        orientation: "vertical"
+                        spacing: dp(10)
+                        padding: dp(20)
+                        radius: 12, 46, 12, 46
+                        size_hint_min_x: show_btn.width + dp(50)
+
+                        MDLabel:
+                            text: "DATA"
+                            halign: "center"
+                            font_style: "H4"
+
+                        MDLabel:
+                            text: "Entries: 69"
+                            halign: "center"
+                            font_style: "Subtitle1"
+                        
+                        MDAnchorLayout:
+                        
+                            MDRectangleFlatButton:
+                                id: show_btn
+                                text: "Show/Edit entries"
+                                line_width: 1.069
+
+                                on_release: root._show_btn_pressed()
+
+                MDAnchorLayout:
+                    size_hint_x: 0.8
+                    md_bg_color: [.05, .05, .05, .069]
+
+                    BaseCard:
+                        size_hint: 0.7, 0.6
+                        size_hint_min_x: btn_grp.width + dp(40)
+                        size_hint_min_y: btn_grp.height + dp(40)
+
+                        MDAnchorLayout:
+
+                            MDBoxLayout:
+                                id: btn_grp
+                                orientation: "vertical"
+                                spacing: dp(10)
+                                adaptive_size: True
+                                
+                                MDRectangleFlatButton:
+                                    text: "Import CSV"
+                                    line_width: 1.069
+                                    on_release: root._import_csv_btn_pressed()
+                                    
+                                MDRectangleFlatButton:
+                                    text: "Export CSV"
+                                    line_width: 1.069
+                                    on_release: root._export_csv_btn_pressed()
+            
+            MDBoxLayout:
+                orientation: "horizontal"
+                spacing: dp(20)
+
+                MDAnchorLayout:
+                    md_bg_color: [.05, .05, .05, .069]
+
+                    BaseCard:
+                        size_hint: 0.7, 0.5
+                        size_hint_min_x: student_btn.width + dp(40)
+                        size_hint_min_y: student_btn.height + dp(40)
+
+                        MDAnchorLayout:
+
+                            MDRectangleFlatButton:
+                                id: student_btn
+                                text: "Individual Student Analysis"
+                                line_width: 1.069
+                                on_release: root._student_analysis_btn_pressed()
+
+                MDAnchorLayout:
+                    md_bg_color: [.05, .05, .05, .069]
+
+                    BaseCard:
+                        size_hint: 0.7, 0.5
+                        size_hint_min_x: class_btn.width + dp(40)
+                        size_hint_min_y: class_btn.height + dp(40)
+                        
+                        MDAnchorLayout:
+
+                            MDRectangleFlatButton:
+                                id: class_btn
+                                text: "Class or Section Analysis"
+                                line_width: 1.069
+                                on_release: root._class_analysis_btn_pressed()
