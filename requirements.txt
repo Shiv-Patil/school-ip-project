@@ -1,0 +1,5 @@
+https://github.com/kivy/kivy/archive/master.zip --no-binary=kivy
+https://github.com/kivymd/KivyMD/archive/master.zip
+pillow
+pandas
+olefile
