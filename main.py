@@ -15,6 +15,9 @@ class StudentAnalysis(MDApp):
         self.theme_cls.colors = utils.colors
         self.theme_cls.primary_palette = "Teal"
         self.root = importlib.import_module("root").Root()
+        self.database = importlib.import_module("sqloperator").SqlOperator()
+
+    def on_start(self):
         self.root.goto("dashboard")
 
     def start_task(self, func):
