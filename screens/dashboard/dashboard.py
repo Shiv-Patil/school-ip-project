@@ -9,7 +9,7 @@ app = MDApp.get_running_app()
 
 class Dashboard(MDScreen):
     def _show_btn_pressed(self):
-        pass
+        app.root.goto("display")
 
     def _import_csv_btn_pressed(self):
         pass

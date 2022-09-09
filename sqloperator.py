@@ -11,77 +11,87 @@ class SqlOperator:
         if not os.path.isdir(self.storage_dir):
             os.makedirs(self.storage_dir)
         self.PATH = os.path.join(self.storage_dir, "user_db.dQw4w9WgXcQ")
-        self._create_tables()
+        self._check_tables()
 
-    def _create_tables(self):
-        students = """
-        CREATE TABLE IF NOT EXISTS students (
-            gr_no INTEGER PRIMARY KEY NOT NULL,
-            first_name TEXT NOT NULL,
-            middle_name TEXT,
-            last_name TEXT,
-            class TEXT NOT NULL,
-            division TEXT,
-            start_academic_year INTEGER NOT NULL
-        )
-        """
-        exam = """
-        CREATE TABLE IF NOT EXISTS exam (
-            id INTEGER PRIMARY KEY NOT NULL,
-            student INTEGER NOT NULL,
-            name TEXT NOT NULL,
-            month BOOLEAN,
-            FOREIGN KEY (student) REFERENCES students (gr_no) ON DELETE CASCADE
-        )
-        """
-        marks = """
-        CREATE TABLE IF NOT EXISTS marks (
-            exam INTEGER NOT NULL,
-            mathematics INTEGER,
-            english INTEGER,
-            phyiscs INTEGER,
-            chemistry INTEGER,
-            informatics_practices INTEGER,
-            FOREIGN KEY (exam) REFERENCES exam (id) ON DELETE CASCADE
-        )
-        """
-
-        self.execute_query(students)
-        self.execute_query(exam)
-        self.execute_query(marks)
+    def _check_tables(self):
+        get_tables_query = "SELECT name FROM sqlite_master WHERE type='table';"
+        for table in self.execute_query(get_tables_query):
+            if table not in (("students",), ("academic_year",), ("marks",)):
+                app.logger.error("App: Dropping table " + table[0] + " as not used.")
+                self.execute_query("DROP TABLE IF EXISTS " + table[0])
 
         columns = [i[1] for i in self.execute_query("PRAGMA table_info (students)")]
         if columns != [
-            "gr_no",
+            "id",
             "first_name",
             "middle_name",
             "last_name",
-            "class",
-            "division",
-            "start_academic_year",
         ]:
-            app.logger.error("App: Table 'students' invalid! Recreating...")
+            app.logger.error("App: Table 'students' invalid! Creating...")
             self.execute_query("DROP TABLE IF EXISTS students")
-            return self._create_tables()
+            self._create_tables()
 
-        columns = [i[1] for i in self.execute_query("PRAGMA table_info (exam)")]
-        if columns != ["id", "student", "name", "month"]:
-            app.logger.error("App: Table 'exam' invalid! Recreating...")
-            self.execute_query("DROP TABLE IF EXISTS exam")
-            return self._create_tables()
+        columns = [
+            i[1] for i in self.execute_query("PRAGMA table_info (academic_year)")
+        ]
+        if columns != ["id", "student", "class", "division", "year_start"]:
+            app.logger.error("App: Table 'academic_year' invalid! Creating...")
+            self.execute_query("DROP TABLE IF EXISTS academic_year")
+            self._create_tables()
 
         columns = [i[1] for i in self.execute_query("PRAGMA table_info (marks)")]
         if columns != [
+            "id",
+            "academic_year",
             "exam",
+            "month",
             "mathematics",
             "english",
             "phyiscs",
             "chemistry",
             "informatics_practices",
         ]:
-            app.logger.error("App: Table 'marks' invalid! Recreating...")
+            app.logger.error("App: Table 'marks' invalid! Creating...")
             self.execute_query("DROP TABLE IF EXISTS marks")
-            return self._create_tables()
+            self._create_tables()
+
+    def _create_tables(self):
+        students = """
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY NOT NULL,
+            first_name TEXT NOT NULL,
+            middle_name TEXT,
+            last_name TEXT
+        )
+        """
+        academic_year = """
+        CREATE TABLE IF NOT EXISTS academic_year (
+            id INTEGER PRIMARY KEY NOT NULL,
+            student INTEGER NOT NULL,
+            class TEXT NOT NULL,
+            division BOOLEAN,
+            year_start INTEGER NOT NULL,
+            FOREIGN KEY (student) REFERENCES students (id) ON DELETE CASCADE
+        )
+        """
+        marks = """
+        CREATE TABLE IF NOT EXISTS marks (
+            id INTEGER PRIMARY KEY NOT NULL,
+            academic_year INTEGER NOT NULL,
+            exam TEXT NOT NULL,
+            month TEXT,
+            mathematics INTEGER,
+            english INTEGER,
+            phyiscs INTEGER,
+            chemistry INTEGER,
+            informatics_practices INTEGER,
+            FOREIGN KEY (academic_year) REFERENCES academic_year (id) ON DELETE CASCADE
+        )
+        """
+
+        self.execute_query(students)
+        self.execute_query(academic_year)
+        self.execute_query(marks)
 
         app.logger.info("App: Database initialized")
 
