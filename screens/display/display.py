@@ -5,12 +5,15 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivy.effects.scroll import ScrollEffect
+from kivymd.uix.menu import MDDropdownMenu
+from kivy.clock import Clock
 
 app = MDApp.get_running_app()
 
 
 class Display(MDScreen):
     data_table = None
+    menu = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,7 +21,37 @@ class Display(MDScreen):
     def on_enter(self, *args):
         if not self.data_table:
             self._create_table()
+        if not self.menu:
+            self._create_dropdown()
         return super().on_enter(*args)
+
+    def _create_dropdown(self):
+        def set_item(text_item):
+            Clock.schedule_once(lambda dt: self.menu.dismiss(), 0.169)
+            Clock.schedule_once(
+                lambda dt: self.ids.num_results.set_item(text_item), 0.1
+            )
+
+        menu_items = [
+            {
+                "viewclass": "OneLineListItem",
+                "text": f"{i} Rows",
+                "height": dp(52),
+                "on_release": lambda x=f"{i} Rows": set_item(x),
+            }
+            for i in ("05", "10", "15", "20")
+        ]
+        self.menu = MDDropdownMenu(
+            caller=self.ids.num_results,
+            items=menu_items,
+            position="bottom",
+            width_mult=2,
+            background_color="white",
+            opening_time=0,
+            elevation=1,
+        )
+        self.menu.ids.md_menu.effect_cls = ScrollEffect
+        self.menu.ids.md_menu.children[0].padding = (0, 0, 0, 0)
 
     def _create_table(self):
         self.data_table = MDDataTable(
