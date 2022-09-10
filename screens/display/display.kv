@@ -2,5 +2,74 @@
     name: 'display'
 
     MDGridLayout:
+        id: layout
         cols: 1
         md_bg_color: app.theme_cls.bg_normal
+
+        MDLabel:
+            size_hint_y: None
+            text: "View Data"
+            halign: "center"
+            font_style: "H4"
+            height: self.texture_size[1]
+            padding: 0, dp(10)
+        
+        AnchorLayout:
+            size_hint_y: None
+            height: controls_container.height + self.padding[1] + self.padding[3]
+            orientation: "horizontal"
+            padding: dp(20), 0
+
+            MDCard:
+                id: controls_container
+                md_bg_color: "#FAFAFA"
+                background_hue: "200"
+                adaptive_height: True
+                size_hint_max_x: 1074
+                elevation: 1
+                padding: dp(20)
+
+                AnchorLayout:
+                    size_hint_y: None
+                    height: controls.height + self.padding[1] + self.padding[3]
+
+                    MDGridLayout:
+                        id: controls
+                        cols: 3
+                        adaptive_width: True
+                        size_hint_y: None
+                        height: max(id_field.height, show_btn.height)
+                        spacing: dp(20)
+
+                        AnchorLayout:
+                            size_hint_x: None
+                            width: id_field.width
+
+                            MDTextField:
+                                id: id_field
+                                hint_text: "ID"
+                                size_hint: None, None
+                                width: dp(100)
+
+                        AnchorLayout:
+                            size_hint_x: None
+                            width: name_field.width
+
+                            MDTextField:
+                                id: name_field
+                                hint_text: "Name"
+                                size_hint: None, None
+                                width: dp(300)
+                        
+                        AnchorLayout:
+                            size_hint_x: None
+                            width: show_btn.width
+
+                            MDRaisedButton:
+                                id: show_btn
+                                text: "Show"
+                                elevation: 1
+
+        AnchorLayout:
+            id: datatable_wrapper
+            padding: dp(20)
