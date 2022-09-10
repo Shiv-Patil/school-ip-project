@@ -20,11 +20,12 @@ class StudentAnalysis(MDApp):
     def on_start(self):
         self.root.goto("dashboard")
 
-    def start_task(self, func, after):
+    def start_task(self, func, after=None):
         @mainthread
         def callback():
             self.root.hide_loading()
-            after()
+            if callable(after):
+                after()
 
         def task():
             func()

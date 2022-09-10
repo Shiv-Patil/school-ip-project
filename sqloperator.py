@@ -72,9 +72,10 @@ class SqlOperator:
             id INTEGER PRIMARY KEY NOT NULL,
             student INTEGER NOT NULL,
             class TEXT NOT NULL,
-            division BOOLEAN,
+            division TEXT,
             rollno INTEGER NOT NULL,
             year_start INTEGER NOT NULL,
+            UNIQUE(student, year_start) ON CONFLICT REPLACE,
             FOREIGN KEY (student) REFERENCES students (id) ON DELETE CASCADE
         ) STRICT
         """
@@ -117,7 +118,7 @@ class SqlOperator:
             connection.commit()
             connection.close()
         except Exception as e:
-            app.logger.error("App: " + str(e))
+            app.logger.error("Database: " + str(e))
             connection.close()
         finally:
             return result
