@@ -3,6 +3,9 @@ from kivymd.app import MDApp
 from kivy.logger import Logger
 from threading import Thread
 from kivy.clock import mainthread
+import logging
+
+logging.getLogger("PIL").setLevel(logging.ERROR)
 
 
 class StudentAnalysis(MDApp):
