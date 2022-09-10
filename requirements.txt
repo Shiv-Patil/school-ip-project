@@ -3,3 +3,4 @@ https://github.com/kivymd/KivyMD/archive/master.zip
 pillow
 pandas
 olefile
+pysqlite3-binary

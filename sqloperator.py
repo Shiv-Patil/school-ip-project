@@ -1,4 +1,4 @@
-import sqlite3
+import pysqlite3
 import os
 from kivymd.app import MDApp
 
@@ -12,10 +12,14 @@ class SqlOperator:
             os.makedirs(self.storage_dir)
         self.PATH = os.path.join(self.storage_dir, "user_db.dQw4w9WgXcQ")
         self._check_tables()
+        app.logger.debug("App: Database initialized")
 
     def _check_tables(self):
-        get_tables_query = "SELECT name FROM sqlite_master WHERE type='table';"
-        for table in self.execute_query(get_tables_query):
+        self._create_tables()
+
+        for table in self.execute_query(
+            "SELECT name FROM sqlite_master WHERE type='table'"
+        ):
             if table not in (("students",), ("academic_year",), ("marks",)):
                 app.logger.error("App: Dropping table " + table[0] + " as not used.")
                 self.execute_query("DROP TABLE IF EXISTS " + table[0])
@@ -34,7 +38,7 @@ class SqlOperator:
         columns = [
             i[1] for i in self.execute_query("PRAGMA table_info (academic_year)")
         ]
-        if columns != ["id", "student", "class", "division", "year_start"]:
+        if columns != ["id", "student", "class", "division", "rollno", "year_start"]:
             app.logger.error("App: Table 'academic_year' invalid! Creating...")
             self.execute_query("DROP TABLE IF EXISTS academic_year")
             self._create_tables()
@@ -44,7 +48,6 @@ class SqlOperator:
             "id",
             "academic_year",
             "exam",
-            "month",
             "mathematics",
             "english",
             "phyiscs",
@@ -62,7 +65,7 @@ class SqlOperator:
             first_name TEXT NOT NULL,
             middle_name TEXT,
             last_name TEXT
-        )
+        ) STRICT
         """
         academic_year = """
         CREATE TABLE IF NOT EXISTS academic_year (
@@ -70,37 +73,35 @@ class SqlOperator:
             student INTEGER NOT NULL,
             class TEXT NOT NULL,
             division BOOLEAN,
+            rollno INTEGER NOT NULL,
             year_start INTEGER NOT NULL,
             FOREIGN KEY (student) REFERENCES students (id) ON DELETE CASCADE
-        )
+        ) STRICT
         """
         marks = """
         CREATE TABLE IF NOT EXISTS marks (
             id INTEGER PRIMARY KEY NOT NULL,
             academic_year INTEGER NOT NULL,
             exam TEXT NOT NULL,
-            month TEXT,
             mathematics INTEGER,
             english INTEGER,
             phyiscs INTEGER,
             chemistry INTEGER,
             informatics_practices INTEGER,
             FOREIGN KEY (academic_year) REFERENCES academic_year (id) ON DELETE CASCADE
-        )
+        ) STRICT
         """
 
         self.execute_query(students)
         self.execute_query(academic_year)
         self.execute_query(marks)
 
-        app.logger.info("App: Database initialized")
-
     def _create_connection(self):
         if not os.path.isdir(self.storage_dir):
             os.makedirs(self.storage_dir)
         connection = None
         try:
-            connection = sqlite3.connect(self.PATH, timeout=10)
+            connection = pysqlite3.connect(self.PATH, timeout=10)
         except Exception as e:
             app.logger.error("App: " + str(e))
         return connection
