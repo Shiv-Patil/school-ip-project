@@ -24,10 +24,16 @@ class StudentAnalysis(MDApp):
     def on_start(self):
         self.root.goto("dashboard")
 
-    def start_task(self, func, after=None):
+    def start_task(
+        self, func, after=None, start_loading_func=True, stop_loading_func=True
+    ):
+        if start_loading_func is True or stop_loading_func is True:
+            start_loading_func = self.root.show_loading
+            stop_loading_func = self.root.hide_loading
+
         @mainthread
         def callback(result):
-            self.root.hide_loading()
+            stop_loading_func()
             self.loading = False
             if callable(after):
                 after(result)
@@ -36,7 +42,7 @@ class StudentAnalysis(MDApp):
             callback(func())
 
         self.loading = True
-        self.root.show_loading()
+        start_loading_func()
         thread = Thread(target=task)
         thread.daemon = True
         thread.start()
