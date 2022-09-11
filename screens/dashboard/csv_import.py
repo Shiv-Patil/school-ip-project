@@ -1,11 +1,31 @@
 from pandas_schema import Column, Schema
 from pandas_schema.validation import InRangeValidation
+from kivy.core.window import Window
 import pandas
 import numpy
 from kivymd.app import MDApp
+from kivymd.uix.card import MDCard
+from widgets.dialog import Dialog
+from kivy.lang import Builder
+from kivy.properties import ColorProperty
+import utils
+import os
 
 app = MDApp.get_running_app()
 
+
+class ImportModalContainer(MDCard):
+    upload_icon_color = ColorProperty([0.78, 0.78, 0.78, 1])
+
+    def on_kv_post(self, _):
+        Window.bind(on_drop_file=self.file_dropped)
+        self.upload_icon_color = [0.78, 0.78, 0.78, 1]
+
+    def file_dropped(self, inst, file, x, y, *_args):
+        print(file)
+
+
+Builder.load_file(utils.get_path(os.path.join("screens", "dashboard", "csv_import.kv")))
 schema = Schema(
     [
         Column("id"),
@@ -38,6 +58,16 @@ schema = Schema(
         Column("term2-ip", allow_empty=True),
     ]
 )
+
+
+def init_importmodal(self):
+    if not self.dialog:
+        self.import_csv_container = ImportModalContainer()
+        self.dialog = Dialog(
+            auto_dismiss=True,
+            content_cls=self.import_csv_container,
+            overlay_color=(0, 0, 0, 0.6),
+        )
 
 
 def _read_csv_and_validate(filepath):

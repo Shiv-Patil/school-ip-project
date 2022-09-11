@@ -1,0 +1,64 @@
+<ImportModalContainer>:
+    orientation: "vertical"
+    size_hint: None, None
+    size: dp(500), dp(380)
+    padding: dp(10)
+
+    AnchorLayout:
+
+        MDBoxLayout:
+            orientation: "vertical"
+            adaptive_height: True
+            spacing: dp(5)
+
+            AnchorLayout:
+                size_hint_y: None
+                height: upload_icon.height
+
+                MDIcon:
+                    id: upload_icon
+                    icon: "file-upload"
+                    color: root.upload_icon_color
+                    font_size: dp(48)
+                    size_hint: None, None
+                    size: self.texture_size
+
+            MDLabel:
+                text: "Upload CSV file"
+                font_style: "Subtitle1"
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+                color: "#DDDDDD"
+    
+            AnchorLayout:
+                size_hint_y: None
+                height: browse_button.height + self.padding[1]
+                padding: 0, dp(20), 0, 0
+
+                MDRoundFlatButton:
+                    id: browse_button
+                    text: "Browse Files"
+                    line_width: 1.069
+
+    AnchorLayout:
+        id: root_button_box
+        size_hint_y: None
+        height: button_box.height
+        anchor_x: "right"
+
+        MDBoxLayout:
+            id: button_box
+            orientation: 'horizontal'
+            adaptive_size: True
+            spacing: dp(10)
+
+            MDFlatButton:
+                text: "Cancel"
+                on_release:
+                    root.parent.parent.dismiss()
+            
+            MDRaisedButton:
+                id: import_button
+                text: "IMPORT"
+                disabled: True
