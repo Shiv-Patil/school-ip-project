@@ -54,11 +54,12 @@ def _read_csv_and_validate(filepath):
 def import_csv_in_database(csv, set_progress):
     df = _read_csv_and_validate(csv)
     if df is False:
-        return
+        return False
+    df.drop_duplicates(inplace=True)
     total_rows = len(df)
     rows_added = 0
     unique_added = numpy.array([])
-    for _, data in df.drop_duplicates().iterrows():
+    for _, data in df.iterrows():
         id = data.at["id"]
         if not numpy.isin(id, unique_added):
             unique_added = numpy.append(unique_added, id)
@@ -83,3 +84,4 @@ def import_csv_in_database(csv, set_progress):
             )
         rows_added += 1
         set_progress(round((rows_added / total_rows) * 100))
+    return True

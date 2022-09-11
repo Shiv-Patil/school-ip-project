@@ -7,6 +7,8 @@ from kivymd.app import MDApp
 from kivy.effects.scroll import ScrollEffect
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.clock import Clock
+from functools import partial
+from . import search_data
 
 app = MDApp.get_running_app()
 
@@ -15,15 +17,29 @@ class Display(MDScreen):
     data_table = None
     menu = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def on_enter(self, *args):
         if not self.data_table:
             self._create_table()
         if not self.menu:
             self._create_dropdown()
         return super().on_enter(*args)
+
+    def _on_show_button_pressed(self):
+        self.populate_rows()
+
+    def populate_rows(self):
+        _num_results = int(self.ids.num_results.current_item[:2])
+        _std = self.ids.class_field.text.strip()
+        _id_name = self.ids.id_name_field.text.strip()
+
+        def callback(rows):
+            if not rows:
+                return
+            self.data_table.update_row_data(self.data_table, rows)
+
+        app.start_task(
+            partial(search_data.get_rows, _num_results, _std, _id_name, app), callback
+        )
 
     def _create_dropdown(self):
         def set_item(text_item):
@@ -32,6 +48,7 @@ class Display(MDScreen):
                 lambda dt: self.ids.num_results.set_item(text_item), 0.1
             )
 
+        self.ids.num_results.set_item("05 Rows")
         menu_items = [
             {
                 "viewclass": "OneLineListItem",

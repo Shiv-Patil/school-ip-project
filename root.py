@@ -1,6 +1,7 @@
+from xmlrpc.client import Boolean
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, BooleanProperty
 from kivymd.uix.screenmanager import MDScreenManager
 from kivy.uix.floatlayout import FloatLayout
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -9,7 +10,7 @@ from kivy.uix.screenmanager import CardTransition
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.behaviors import ButtonBehavior
-from kivymd.uix.behaviors import HoverBehavior
+from kivymd.uix.behaviors import HoverBehavior, CommonElevationBehavior
 import importlib
 from kivymd.material_resources import DEVICE_TYPE
 
@@ -18,14 +19,17 @@ kv = """
 #:import Window kivy.core.window.Window
 #:import get_path utils.get_path
 #:import os os
-<TitleBtn>
+<TitleBtn, ElevationTitleBtn>
     icon: "circle"
     pos_hint: {"center_x": .5, "center_y": .5}
     font_size: dp(20)
-    color: [0, 0.8, 0.14, 1]
+    size_hint: None, None
+    size: self.texture_size
+    elevation: 1
+    color: "black"
     draggable: False
     on_enter:
-        Window.set_system_cursor('hand')
+        Window.set_system_cursor('hand') if self.do_hover else 0
     on_leave:
         Window.set_system_cursor('arrow')
 <LoadingOverlay>
@@ -50,7 +54,15 @@ kv = """
         orientation: "horizontal"
         size_hint_y: None
         height: dp(69/2)
-        Widget:
+        MDAnchorLayout:
+            anchor_x: "left"
+            padding: dp(7), 0
+            TitleBtn:
+                id: back_btn
+                icon: "menu-left"
+                font_size: "24dp"
+                detect_visible: False
+                on_release: root.goback()
         MDLabel:
             text: "Student Analysis"
             font_style: "Subtitle2"
@@ -60,21 +72,18 @@ kv = """
             MDGridLayout:
                 cols: 3
                 spacing: dp(5)
-                size_hint_x: None
+                adaptive_size: True
                 width: dp(80)
-                adaptive_height: True
-                TitleBtn:
+                padding: dp(7), 0
+                ElevationTitleBtn:
                     color: [0, 0.8, 0.14, 1]
-                    on_release:
-                        Window.minimize()
-                TitleBtn:
+                    on_release: Window.minimize()
+                ElevationTitleBtn:
                     color: [1, 0.75, 0, 1]
-                    on_release:
-                        Window.maximize()
-                TitleBtn:
+                    on_release: Window.maximize()
+                ElevationTitleBtn:
                     color: [1, 0.37, 0.3, 1]
-                    on_release:
-                        app.stop()
+                    on_release: app.stop()
 """
 Builder.load_string(kv)
 
@@ -96,6 +105,7 @@ class Root(MDBoxLayout):
         self.add_widget(self.manager)
         self.manager.transition = CardTransition()
         Window.bind(on_key_up=self._handle_keyboard)
+        self.bind(history = self.on_history_change)
 
         self.loading_widget = LoadingOverlay()
 
@@ -134,7 +144,8 @@ class Root(MDBoxLayout):
 
     def _handle_keyboard(self, instance, key, *args):
         if key in (1001, 27):
-            self.goback()
+            if not app.loading:
+                self.goback()
             return True
 
     def goback(self):
@@ -144,6 +155,15 @@ class Root(MDBoxLayout):
             side = "left" if prev_side == "right" else "right"
 
             self.goto(prev_screen["name"], side=side, _from_goback=True)
+    
+    def on_history_change(self, inst, history):
+        if len(history) > 1:
+            self.ids.back_btn.opacity = "1"
+            self.ids.back_btn.do_hover = True
+        else:
+            self.ids.back_btn.opacity = "0"
+            self.ids.back_btn.do_hover = False
+            Window.set_system_cursor('arrow')
 
     def _set_custom_titlebar(self):
         wid = self.ids.title_bar
@@ -162,8 +182,10 @@ class Root(MDBoxLayout):
 
 
 class TitleBtn(ButtonBehavior, MDIcon, HoverBehavior):
-    pass
+    do_hover = BooleanProperty(False)
 
+class ElevationTitleBtn(CommonElevationBehavior, TitleBtn):
+    pass
 
 class LoadingOverlay(FloatLayout):
     def on_touch_down(self, touch):

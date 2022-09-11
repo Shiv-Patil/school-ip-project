@@ -13,6 +13,7 @@ class StudentAnalysis(MDApp):
     name = "student analysis"
     title = "student analysis"
     logger = Logger
+    loading = False
 
     def build(self):
         self.theme_cls.colors = utils.colors
@@ -25,15 +26,16 @@ class StudentAnalysis(MDApp):
 
     def start_task(self, func, after=None):
         @mainthread
-        def callback():
+        def callback(result):
             self.root.hide_loading()
+            self.loading = False
             if callable(after):
-                after()
+                after(result)
 
         def task():
-            func()
-            callback()
+            callback(func())
 
+        self.loading = True
         self.root.show_loading()
         thread = Thread(target=task)
         thread.daemon = True
