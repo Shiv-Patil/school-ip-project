@@ -50,7 +50,7 @@ class Dialog(FloatLayout):
                     if self.auto_dismiss:
                         self.dismiss()
                 else:
-                    return super(Dialog, self).on_touch_down(touch)
+                    self.content_cls.on_touch_down(touch)
             return True
 
     def open(self, *_args, **kwargs):
@@ -100,6 +100,11 @@ class Dialog(FloatLayout):
         pass
 
     def _handle_keyboard(self, instance, key, *args):
-        if key in (1001, 27) and self.auto_dismiss and self._is_open:
+        if (
+            key in (1001, 27)
+            and self.auto_dismiss
+            and self._is_open
+            and not app.loading
+        ):
             self.dismiss()
             return True

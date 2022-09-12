@@ -7,7 +7,9 @@ from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from widgets.dialog import Dialog
 from kivy.lang import Builder
-from kivy.properties import ColorProperty
+from kivy.properties import ColorProperty, StringProperty, BooleanProperty
+from plyer import filechooser
+from kivy.clock import mainthread
 import utils
 import os
 
@@ -16,13 +18,40 @@ app = MDApp.get_running_app()
 
 class ImportModalContainer(MDCard):
     upload_icon_color = ColorProperty([0.78, 0.78, 0.78, 1])
+    filepath = StringProperty("")
+    _choosing_file = BooleanProperty(False)
 
     def on_kv_post(self, _):
-        Window.bind(on_drop_file=self.file_dropped)
-        self.upload_icon_color = [0.78, 0.78, 0.78, 1]
+        Window.bind(on_drop_file=self._file_dropped)
 
-    def file_dropped(self, inst, file, x, y, *_args):
-        print(file)
+    def dialog_dismissed(self, _inst):
+        self.upload_icon_color = [0.78, 0.78, 0.78, 1]
+        self.filepath = ""
+
+    def _file_dropped(self, _inst, file: bytes, *_args):
+        self._file_selected(file.decode())
+
+    def _on_browse_button_clicked(self):
+        def _after(result):
+            self._choosing_file = False
+
+        self._choosing_file = True
+        app.start_task(
+            lambda *args: filechooser.open_file(
+                on_selection=lambda f: self._file_selected(f[0])
+            ),
+            _after,
+            show_loading_anim=False,
+            overlay_color=(0, 0, 0, 0.1),
+        )
+
+    @mainthread
+    def _file_selected(self, filepath: str):
+        if filepath.endswith(".csv"):
+            self.filepath = filepath
+            self.upload_icon_color = [0.34, 0.68, 0.91, 1]
+        else:
+            app.toast("Please select a valid csv file")
 
 
 Builder.load_file(utils.get_path(os.path.join("screens", "dashboard", "csv_import.kv")))
@@ -68,6 +97,7 @@ def init_importmodal(self):
             content_cls=self.import_csv_container,
             overlay_color=(0, 0, 0, 0.6),
         )
+        self.dialog.bind(on_dismiss=self.import_csv_container.dialog_dismissed)
 
 
 def _read_csv_and_validate(filepath):

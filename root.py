@@ -114,7 +114,9 @@ class Root(MDBoxLayout):
 
         self._set_custom_titlebar()
 
-    def show_loading(self):
+    def show_loading(self, anim=True, overlay_color=(0, 0, 0, 0.4)):
+        self.loading_widget.content_cls.opacity = 0 if not anim else 1
+        self.loading_widget.overlay_color = overlay_color
         self.loading_widget.open()
 
     def hide_loading(self):

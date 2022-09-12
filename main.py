@@ -3,6 +3,7 @@ from kivymd.app import MDApp
 from kivy.logger import Logger
 from threading import Thread
 from kivy.clock import mainthread
+from widgets.toast import Toast
 import logging
 
 logging.getLogger("PIL").setLevel(logging.ERROR)
@@ -14,22 +15,34 @@ class StudentAnalysis(MDApp):
     title = "student analysis"
     logger = Logger
     loading = False
+    _toast = None
 
     def build(self):
         self.theme_cls.colors = utils.colors
         self.theme_cls.primary_palette = "Teal"
         self.root = importlib.import_module("root").Root()
         self.database = importlib.import_module("sqloperator").SqlOperator()
+        self._toast = Toast()
 
     def on_start(self):
         self.root.goto("dashboard")
 
     def start_task(
-        self, func, after=None, start_loading_func=True, stop_loading_func=True
+        self,
+        func,
+        after=None,
+        use_overlay=True,
+        show_loading_anim=True,
+        overlay_color=(0, 0, 0, 0.4),
     ):
-        if start_loading_func is True or stop_loading_func is True:
-            start_loading_func = self.root.show_loading
-            stop_loading_func = self.root.hide_loading
+        start_loading_func, stop_loading_func = (
+            (
+                lambda: self.root.show_loading(show_loading_anim, overlay_color),
+                self.root.hide_loading,
+            )
+            if use_overlay
+            else (lambda: 0, lambda: 0)
+        )
 
         @mainthread
         def callback(result):
@@ -46,6 +59,10 @@ class StudentAnalysis(MDApp):
         thread = Thread(target=task)
         thread.daemon = True
         thread.start()
+
+    @mainthread
+    def toast(self, msg):
+        self._toast.toast(msg)
 
 
 if __name__ == "__main__":

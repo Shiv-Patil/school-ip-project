@@ -4,6 +4,14 @@
     size: dp(500), dp(380)
     padding: dp(10)
 
+    MDLabel:
+        text: "Import CSV"
+        font_style: "H6"
+        halign: "center"
+        size_hint_y: None
+        height: self.texture_size[1]
+        padding: 0, dp(10)
+
     AnchorLayout:
 
         MDBoxLayout:
@@ -24,12 +32,12 @@
                     size: self.texture_size
 
             MDLabel:
-                text: "Upload CSV file"
+                text: "Drop file here or click the button below" if not root.filepath else root.filepath
                 font_style: "Subtitle1"
                 halign: "center"
                 size_hint_y: None
                 height: self.texture_size[1]
-                color: "#DDDDDD"
+                color: 0.78, 0.78, 0.78, 1
     
             AnchorLayout:
                 size_hint_y: None
@@ -38,8 +46,10 @@
 
                 MDRoundFlatButton:
                     id: browse_button
-                    text: "Browse Files"
+                    text: "Browse Files" if not root._choosing_file else "Filechooser open"
+                    disabled: root._choosing_file
                     line_width: 1.069
+                    on_release: root._on_browse_button_clicked()
 
     AnchorLayout:
         id: root_button_box
@@ -61,4 +71,5 @@
             MDRaisedButton:
                 id: import_button
                 text: "IMPORT"
-                disabled: True
+                elevation: 1
+                disabled: True if not root.filepath else False

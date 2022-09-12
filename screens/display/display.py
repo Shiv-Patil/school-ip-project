@@ -32,6 +32,9 @@ class Display(MDScreen):
         _std = self.ids.class_field.text.strip()
         _id_name = self.ids.id_name_field.text.strip()
 
+        if len(_id_name) == 0:
+            return app.toast("ID / Name field required")
+
         def callback(rows):
             if not rows:
                 return

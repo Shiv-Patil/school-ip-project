@@ -4,3 +4,4 @@ pillow
 pandas
 olefile
 pysqlite3-binary
+plyer
