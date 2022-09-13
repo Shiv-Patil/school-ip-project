@@ -8,7 +8,7 @@ from kivy.effects.scroll import ScrollEffect
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.clock import Clock
 from functools import partial
-from . import search_data
+from . import search_data, delete_data
 
 app = MDApp.get_running_app()
 
@@ -16,13 +16,21 @@ app = MDApp.get_running_app()
 class Display(MDScreen):
     data_table = None
     menu = None
+    delete_dialog = None
 
     def on_enter(self, *args):
         if not self.data_table:
             self._create_table()
         if not self.menu:
             self._create_dropdown()
+        delete_data.init_deletemodal(self)
         return super().on_enter(*args)
+
+    def _on_add_button_pressed(self):
+        pass
+
+    def _on_delete_button_pressed(self):
+        self.delete_dialog.open()
 
     def _on_show_button_pressed(self):
         self.populate_rows()
@@ -81,7 +89,7 @@ class Display(MDScreen):
             background_color_selected_cell=app.theme_cls.bg_normal,
             effect_cls=ScrollEffect,
             column_data=[
-                ("Id", dp(15)),
+                ("Id", dp(15), lambda d: int(d)),
                 ("First Name", dp(40)),
                 ("Middle Name", dp(40)),
                 ("Last Name", dp(40)),
@@ -96,6 +104,7 @@ class Display(MDScreen):
         for child in self.data_table.ids.container.children[1].ids.header.children:
             child.tooltip_text = ""
         self.data_table.ids.container.children[1].ids.first_cell.tooltip_text = ""
+        self.data_table.bind(on_row_press=lambda _table, row: print(row))
         self.ids.datatable_wrapper.add_widget(self.data_table)
 
 

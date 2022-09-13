@@ -1,5 +1,4 @@
 from pandas_schema import Column, Schema
-from pandas_schema.validation import InRangeValidation
 from kivy.core.window import Window
 import pandas
 import numpy
@@ -24,6 +23,7 @@ app = MDApp.get_running_app()
 class ImportModalContainer(MDCard):
     upload_icon_color = ColorProperty([0.78, 0.78, 0.78, 1])
     filepath = StringProperty("")
+    dashboard = None
     _choosing_file = BooleanProperty(False)
     _file_content_invalid = BooleanProperty(False)
     _importing_file = BooleanProperty(False)
@@ -76,6 +76,8 @@ class ImportModalContainer(MDCard):
                 self.upload_icon_color = [0.94, 0.3, 0.3, 1]
             else:
                 app.toast("Imported CSV successfully.")
+                if self.dashboard:
+                    self.dashboard.update_count()
 
         def _set_progress(val):
             self._percent_imported = val
@@ -128,6 +130,7 @@ schema = Schema(
 def init_importmodal(self):
     if not self.dialog:
         self.import_csv_container = ImportModalContainer()
+        self.import_csv_container.dashboard = self
         self.dialog = Dialog(
             auto_dismiss=True,
             content_cls=self.import_csv_container,

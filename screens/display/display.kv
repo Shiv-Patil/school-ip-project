@@ -30,6 +30,12 @@
                 elevation: 1
                 padding: dp(10)
 
+                MDFloatingActionButton:
+                    icon: "plus"
+                    elevation: 1
+                    pos_hint: {'center_y': 0.5}
+                    on_release: root._on_add_button_pressed()
+
                 MDAnchorLayout:
                     size_hint_y: None
                     height: controls.height
@@ -82,6 +88,13 @@
                                 text: "Show"
                                 elevation: 1
                                 on_release: root._on_show_button_pressed()
+
+                MDFloatingActionButton:
+                    icon: "delete-forever"
+                    elevation: 1
+                    pos_hint: {'center_y': 0.5}
+                    md_bg_color: "#edc5c4"
+                    on_release: root._on_delete_button_pressed()
 
         AnchorLayout:
             id: datatable_wrapper

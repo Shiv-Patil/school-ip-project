@@ -20,6 +20,7 @@ class StudentAnalysis(MDApp):
     def build(self):
         self.theme_cls.colors = utils.colors
         self.theme_cls.primary_palette = "Teal"
+        self.theme_cls.material_style = "M3"
         self.root = importlib.import_module("root").Root()
         self.database = importlib.import_module("sqloperator").SqlOperator()
         self._toast = Toast()
