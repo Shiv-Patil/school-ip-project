@@ -25,14 +25,14 @@
 
                 MDIcon:
                     id: upload_icon
-                    icon: "file-upload"
+                    icon: "file-upload" if not root._file_content_invalid else "file-document-alert"
                     color: root.upload_icon_color
                     font_size: dp(48)
                     size_hint: None, None
                     size: self.texture_size
 
             MDLabel:
-                text: "Drop file here or click the button below" if not root.filepath else root.filepath
+                text: (("Drop file here or click the button below" if not root.filepath else root.filepath) if not root._file_content_invalid else "Invalid File content!") if not root._importing_file else "Importing, please wait..."
                 font_style: "Subtitle1"
                 halign: "center"
                 size_hint_y: None
@@ -42,12 +42,22 @@
             AnchorLayout:
                 size_hint_y: None
                 height: browse_button.height + self.padding[1]
-                padding: 0, dp(20), 0, 0
+                padding: dp(30), dp(20), dp(30), 0
+
+                BoxLayout:
+                    opacity: 1 if root._importing_file else 0
+                    size_hint_y: None
+                    height: dp(3)
+
+                    MDProgressBar:
+                        value: root._percent_imported
+                        color: app.theme_cls.accent_color
 
                 MDRoundFlatButton:
                     id: browse_button
+                    opacity: 1 if not root._importing_file else 0
                     text: "Browse Files" if not root._choosing_file else "Filechooser open"
-                    disabled: root._choosing_file
+                    disabled: root._choosing_file or root._importing_file
                     line_width: 1.069
                     on_release: root._on_browse_button_clicked()
 
@@ -73,3 +83,5 @@
                 text: "IMPORT"
                 elevation: 1
                 disabled: True if not root.filepath else False
+                on_release:
+                    root._on_import_button_clicked()

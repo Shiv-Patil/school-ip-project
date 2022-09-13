@@ -28,7 +28,7 @@ class Display(MDScreen):
         self.populate_rows()
 
     def populate_rows(self):
-        _num_results = int(self.ids.num_results.current_item[:2])
+        _num_results = int(self.ids.num_results.current_item.split()[0])
         _std = self.ids.class_field.text.strip()
         _id_name = self.ids.id_name_field.text.strip()
 
@@ -36,7 +36,7 @@ class Display(MDScreen):
             return app.toast("ID / Name field required")
 
         def callback(rows):
-            if not rows:
+            if not isinstance(rows, list):
                 return
             self.data_table.update_row_data(self.data_table, rows)
 
@@ -59,7 +59,7 @@ class Display(MDScreen):
                 "height": dp(52),
                 "on_release": lambda x=f"{i} Rows": set_item(x),
             }
-            for i in ("05", "10", "15", "20")
+            for i in ("05", "10", "15", "20", "50", "100")
         ]
         self.menu = MDDropdownMenu(
             caller=self.ids.num_results,
@@ -77,7 +77,7 @@ class Display(MDScreen):
         self.data_table = MDDataTable(
             size_hint_max_x=1074,
             elevation=1,
-            rows_num=20,
+            rows_num=100,
             background_color_selected_cell=app.theme_cls.bg_normal,
             effect_cls=ScrollEffect,
             column_data=[

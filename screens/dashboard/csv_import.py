@@ -7,7 +7,12 @@ from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from widgets.dialog import Dialog
 from kivy.lang import Builder
-from kivy.properties import ColorProperty, StringProperty, BooleanProperty
+from kivy.properties import (
+    ColorProperty,
+    StringProperty,
+    BooleanProperty,
+    NumericProperty,
+)
 from plyer import filechooser
 from kivy.clock import mainthread
 import utils
@@ -20,6 +25,9 @@ class ImportModalContainer(MDCard):
     upload_icon_color = ColorProperty([0.78, 0.78, 0.78, 1])
     filepath = StringProperty("")
     _choosing_file = BooleanProperty(False)
+    _file_content_invalid = BooleanProperty(False)
+    _importing_file = BooleanProperty(False)
+    _percent_imported = NumericProperty(0)
 
     def on_kv_post(self, _):
         Window.bind(on_drop_file=self._file_dropped)
@@ -27,6 +35,7 @@ class ImportModalContainer(MDCard):
     def dialog_dismissed(self, _inst):
         self.upload_icon_color = [0.78, 0.78, 0.78, 1]
         self.filepath = ""
+        self._file_content_invalid = False
 
     def _file_dropped(self, _inst, file: bytes, *_args):
         self._file_selected(file.decode())
@@ -47,11 +56,38 @@ class ImportModalContainer(MDCard):
 
     @mainthread
     def _file_selected(self, filepath: str):
+        self._file_content_invalid = False
+        self.upload_icon_color = [0.78, 0.78, 0.78, 1]
+        self.filepath = ""
         if filepath.endswith(".csv"):
             self.filepath = filepath
             self.upload_icon_color = [0.34, 0.68, 0.91, 1]
         else:
             app.toast("Please select a valid csv file")
+
+    def _on_import_button_clicked(self):
+        if not self.filepath:
+            return
+
+        def _after(result):
+            self._importing_file = False
+            if not result:
+                self._file_content_invalid = True
+                self.upload_icon_color = [0.94, 0.3, 0.3, 1]
+            else:
+                app.toast("Imported CSV successfully.")
+
+        def _set_progress(val):
+            self._percent_imported = val
+
+        self._percent_imported = 0
+        self._importing_file = True
+        app.start_task(
+            lambda *args: import_csv_in_database(self.filepath, _set_progress),
+            _after,
+            show_loading_anim=False,
+            overlay_color=(0, 0, 0, 0.1),
+        )
 
 
 Builder.load_file(utils.get_path(os.path.join("screens", "dashboard", "csv_import.kv")))
@@ -61,7 +97,7 @@ schema = Schema(
         Column("f_name"),
         Column("m_name", allow_empty=True),
         Column("l_name", allow_empty=True),
-        Column("std", [InRangeValidation(1, 13)]),
+        Column("std"),
         Column("div", allow_empty=True),
         Column("roll_no"),
         Column("year"),
