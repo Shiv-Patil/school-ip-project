@@ -3,7 +3,9 @@ from kivy.lang import Builder
 import utils, os
 from kivymd.app import MDApp
 from kivy.properties import StringProperty
-from . import csv_import
+from . import csv_import, csv_export
+from plyer import filechooser
+from kivy.clock import mainthread
 
 app = MDApp.get_running_app()
 
@@ -33,7 +35,21 @@ class Dashboard(MDScreen):
         self.dialog.open()
 
     def _export_csv_btn_pressed(self):
-        pass
+        @mainthread
+        def _save_file(file: str):
+            if not file.endswith(".csv"):
+                file += ".csv"
+            if csv_export.export_csv(app, file):
+                app.toast('Exported csv as "' + os.path.basename(file) + '"')
+            else:
+                app.toast("No data to export")
+
+        app.start_task(
+            lambda *args: filechooser.save_file(
+                on_selection=lambda f: _save_file(f[0]),
+                filters=["*.csv"],
+            ),
+        )
 
     def _student_analysis_btn_pressed(self):
         pass

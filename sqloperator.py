@@ -1,4 +1,5 @@
-import pysqlite3
+import sqlite3
+from packaging import version
 import os
 from kivymd.app import MDApp
 
@@ -65,7 +66,7 @@ class SqlOperator:
             first_name TEXT NOT NULL,
             middle_name TEXT,
             last_name TEXT
-        ) STRICT
+        )
         """
         academic_year = """
         CREATE TABLE IF NOT EXISTS academic_year (
@@ -77,7 +78,7 @@ class SqlOperator:
             year_start INTEGER NOT NULL,
             UNIQUE(student, year_start) ON CONFLICT REPLACE,
             FOREIGN KEY (student) REFERENCES students (id) ON DELETE CASCADE
-        ) STRICT
+        )
         """
         marks = """
         CREATE TABLE IF NOT EXISTS marks (
@@ -90,9 +91,12 @@ class SqlOperator:
             chemistry INTEGER,
             informatics_practices INTEGER,
             FOREIGN KEY (academic_year) REFERENCES academic_year (id) ON DELETE CASCADE
-        ) STRICT
+        )
         """
-
+        if version.parse(sqlite3.sqlite_version) >= version.parse("3.37.2"):
+            students += " STRICT"
+            academic_year += " STRICT"
+            marks += " STRICT"
         self.execute_query(students)
         self.execute_query(academic_year)
         self.execute_query(marks)
@@ -102,7 +106,7 @@ class SqlOperator:
             os.makedirs(self.storage_dir)
         connection = None
         try:
-            connection = pysqlite3.connect(self.PATH, timeout=10)
+            connection = sqlite3.connect(self.PATH, timeout=10)
         except Exception as e:
             app.logger.error("App: " + str(e))
         return connection

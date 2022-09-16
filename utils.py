@@ -1,4 +1,7 @@
-import os, sys, json
+import platform, os, sys, json
+
+if platform.system() == "Windows":
+    os.environ["KIVY_GL_BACKEND"] = "angle_sdl2"
 from kivy.config import Config
 from kivy.resources import resource_add_path
 import widgets

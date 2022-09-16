@@ -1,7 +1,6 @@
 from pandas_schema import Column, Schema
 from kivy.core.window import Window
 import pandas
-import numpy
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from widgets.dialog import Dialog
@@ -79,6 +78,7 @@ class ImportModalContainer(MDCard):
                 if self.dashboard:
                     self.dashboard.update_count()
 
+        @mainthread
         def _set_progress(val):
             self._percent_imported = val
 
@@ -157,11 +157,11 @@ def import_csv_in_database(csv, set_progress):
     df.drop_duplicates(inplace=True)
     total_rows = len(df)
     rows_added = 0
-    unique_added = numpy.array([])
+    unique_added = []
     for _, data in df.iterrows():
         id = data.at["id"]
-        if not numpy.isin(id, unique_added):
-            unique_added = numpy.append(unique_added, id)
+        if id not in unique_added:
+            unique_added.append(id)
             app.database.execute_query(
                 "INSERT OR REPLACE INTO students VALUES (?, ?, ?, ?)",
                 data.loc[:"l_name"],
