@@ -1,0 +1,62 @@
+<EditDataContent>:
+    orientation: "vertical"
+    size_hint: None, None
+    size: dp(400), dp(269)
+    padding: dp(10)
+
+    MDLabel:
+        text: "Edit entry"
+        font_style: "H6"
+        halign: "center"
+        size_hint_y: None
+        height: self.texture_size[1]
+        padding: 0, dp(10)
+
+    AnchorLayout:
+
+        MDBoxLayout:
+            orientation: "vertical"
+            adaptive_height: True
+            spacing: dp(10)
+
+            LimitingTextField:
+                id: id_field
+                hint_text: "ID"
+                input_filter: "int"
+                halign: "center"
+                size_hint: None, None
+                width: dp(169//2)
+                pos_hint: {"center_x": 0.5}
+
+            MDLabel:
+                text: "ID which does not exist will be added"
+                font_style: "Subtitle1"
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+                color: 0.41, 0.41, 0.41, 1
+    
+    AnchorLayout:
+        id: root_button_box
+        size_hint_y: None
+        height: button_box.height
+        anchor_x: "right"
+
+        MDBoxLayout:
+            id: button_box
+            orientation: 'horizontal'
+            adaptive_size: True
+            spacing: dp(10)
+
+            MDFlatButton:
+                text: "Cancel"
+                on_release:
+                    root.parent.parent.dismiss()
+
+            MDRaisedButton:
+                id: import_button
+                text: "Edit"
+                disabled: not id_field.text
+                elevation: 1
+                on_release:
+                    root._on_edit_button_clicked()
