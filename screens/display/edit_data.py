@@ -1,9 +1,7 @@
 from widgets.dialog import Dialog
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
-from kivymd.uix.textfield import MDTextField
 from kivy.lang import Builder
-from kivy.properties import NumericProperty
 import utils
 import os
 
@@ -20,14 +18,6 @@ class EditDataContent(MDCard):
         self.parent.parent.dismiss()
         app.root.goto("edit")
         app.root.manager.get_screen("edit")._id = str(id)
-
-
-class LimitingTextField(MDTextField):
-    max_chars = NumericProperty(6)
-
-    def insert_text(self, substring, from_undo=False):
-        if len(self.text) < self.max_chars:
-            return super().insert_text(substring, from_undo=from_undo)
 
 
 def init_editmodal(self):

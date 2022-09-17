@@ -33,150 +33,63 @@
             padding: dp(20)
 
             ScrollView:
-                size_hint_max_x: dp(1000)
                 effect_cls: ScrollEffect
                 scroll_type: ["bars"]
+                smooth_scroll_end: 10
+                bar_width: 4
 
-                MDBoxLayout:
-                    orientation: "vertical"
-                    spacing: dp(20)
-                    padding: dp(1), 0
-                    adaptive_height: True
+                AnchorLayout:
+                    size_hint_y: None
+                    height: content.height
 
-                    MDTextField:
-                        id: fname_field
-                        hint_text: "First Name"
-                        mode: "rectangle"
-
-                    MDTextField:
-                        id: mname_field
-                        hint_text: "Middle Name"
-                        mode: "rectangle"
-                    
-                    MDTextField:
-                        id: lname_field
-                        hint_text: "Last Name"
-                        mode: "rectangle"
-                    
                     MDBoxLayout:
-                        adaptive_size: True
-                        spacing: dp(10)
-                    
-                        MyLabel:
-                            font_size: sp(22)
-                            text: "Academic years"
-                        
-                        MDFloatingActionButton:
-                            icon: "plus"
-                            type: "small"
-                            elevation: 1
-                            pos_hint: {'center_y': 0.5}
-                            on_release: root._on_add_button_pressed()
-                    
-                    MDSegmentedControl:
-                        pos_hint: {"center_x": .5}
-                        size_hint_y: None
-
-                        MDSegmentedControlItem:
-                            text: "2020"
-
-                        MDSegmentedControlItem:
-                            text: "2021"
-
-                        MDSegmentedControlItem:
-                            text: "2022"
-                    
-                    MDCard:
-                        size_hint: 1, None
-                        height: self.minimum_height
-                        md_bg_color: "#FBFBFB"
+                        id: content
+                        size_hint_max_x: dp(1000)
                         orientation: "vertical"
-                        elevation: 1
-                        spacing: dp(10)
-                        padding: dp(20), dp(10)
+                        spacing: dp(20)
+                        padding: dp(1), 0
+                        adaptive_height: True
 
+                        MDTextField:
+                            id: fname_field
+                            hint_text: "First Name"
+                            mode: "rectangle"
+
+                        MDTextField:
+                            id: mname_field
+                            hint_text: "Middle Name"
+                            mode: "rectangle"
+                        
+                        MDTextField:
+                            id: lname_field
+                            hint_text: "Last Name"
+                            mode: "rectangle"
+                        
                         MDBoxLayout:
-                            spacing: dp(20)
-                            adaptive_height: True
-                            padding: 0, 0, 0, dp(20)
-
-                            MDTextField:
-                                id: std_field
-                                hint_text: "Standard"
-                                mode: "rectangle"
-
-                            MDTextField:
-                                id: div_field
-                                hint_text: "Division"
-                                mode: "rectangle"
-                            
-                            MDTextField:
-                                id: rollno_field
-                                hint_text: "Roll number"
-                                mode: "rectangle"
-                        
-                        MyLabel:
-                            font_size: sp(20)
-                            text: "Marks:"
-                            pos_hint: {}
-                            color: app.theme_cls.text_color
-                        
-                        MDGridLayout:
-                            cols: 5
-                            spacing: dp(10)
-                            padding: dp(10)
                             adaptive_size: True
-                            pos_hint: {"center_x": 0.5}
-
-                            BoxLayout:
-                                orientation: "vertical"
-                                size_hint_x: None
-                                width: self.minimum_width
-                                spacing: dp(20)
-                                padding: dp(10)
-
-                                MyLabel:
-                                    text: " "
-                                
-                                MyLabel:
-                                    size_hint_y: 1
-                                    text: "Maths"
-                                
-                                MyLabel:
-                                    size_hint_y: 1
-                                    text: "English"
-                                
-                                MyLabel:
-                                    size_hint_y: 1
-                                    text: "Physics"
-                                
-                                MyLabel:
-                                    size_hint_y: 1
-                                    text: "Chemistry"
-                                
-                                MyLabel:
-                                    size_hint_y: 1
-                                    text: "IP"
-
-                            MarksInputContainer:
-                                id: unit1_marks
-                                exam: "unit1"
-
-                            MarksInputContainer:
-                                id: unit2_marks
-                                exam: "term1"
-
-                            MarksInputContainer:
-                                id: term1_marks
-                                exam: "unit2"
-
-                            MarksInputContainer:
-                                id: term2_marks
-                                exam: "term2"
+                            spacing: dp(10)
+                        
+                            MyLabel:
+                                font_size: sp(22)
+                                text: "Academic years"
+                            
+                            MDFloatingActionButton:
+                                icon: "plus"
+                                type: "small"
+                                elevation: 1
+                                pos_hint: {'center_y': 0.5}
+                                on_release: root._on_add_button_pressed()
+                        
+                        MDBoxLayout:
+                            id: years_container
+                            pos_hint: {"center_x": .5}
+                            adaptive_size: True
 
 <MarksField>:
     size_hint: None, None
+    multiline: False
     width: dp(60)
+    cursor_color: app.theme_cls.primary_color
     height: self.minimum_height
     line_anim: False
     pos_hint: {"center_x": 0.5}
@@ -193,15 +106,135 @@
 
     MarksField:
         id: maths_field
+        text: str(root.marks[0]) if root.marks[0] else ""
+        on_text: root.marks[0] = self.text
     
     MarksField:
         id: eng_field
+        text: str(root.marks[1]) if root.marks[1] else ""
+        on_text: root.marks[1] = self.text
     
     MarksField:
         id: phy_field
+        text: str(root.marks[2]) if root.marks[2] else ""
+        on_text: root.marks[2] = self.text
     
     MarksField:
         id: chem_field
+        text: str(root.marks[3]) if root.marks[3] else ""
+        on_text: root.marks[3] = self.text
     
     MarksField:
         id: ip_field
+        text: str(root.marks[4]) if root.marks[4] else ""
+        on_text: root.marks[4] = self.text
+
+
+<YearContainer>:
+    size_hint: 1, None
+    height: self.minimum_height
+    md_bg_color: "#FBFBFB"
+    orientation: "vertical"
+    elevation: 1
+    spacing: dp(10)
+    padding: dp(20), dp(10)
+
+    MDBoxLayout:
+        spacing: dp(20)
+        adaptive_height: True
+        padding: 0, 0, 0, dp(20)
+
+        MDTextField:
+            id: std_field
+            hint_text: "Standard"
+            mode: "rectangle"
+
+        MDTextField:
+            id: div_field
+            hint_text: "Division"
+            mode: "rectangle"
+        
+        MDTextField:
+            id: rollno_field
+            hint_text: "Roll number"
+            mode: "rectangle"
+    
+    MyLabel:
+        font_size: sp(20)
+        text: "Marks:"
+        pos_hint: {}
+        color: app.theme_cls.text_color
+    
+    MDGridLayout:
+        cols: 5
+        spacing: dp(10)
+        padding: dp(10)
+        adaptive_size: True
+        pos_hint: {"center_x": 0.5}
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_x: None
+            width: self.minimum_width
+            spacing: dp(20)
+            padding: dp(10)
+
+            MyLabel:
+                text: " "
+            
+            MyLabel:
+                size_hint_y: 1
+                text: "Maths"
+            
+            MyLabel:
+                size_hint_y: 1
+                text: "English"
+            
+            MyLabel:
+                size_hint_y: 1
+                text: "Physics"
+            
+            MyLabel:
+                size_hint_y: 1
+                text: "Chemistry"
+            
+            MyLabel:
+                size_hint_y: 1
+                text: "IP"
+
+        MarksInputContainer:
+            id: unit1_marks
+            exam: "unit1"
+
+        MarksInputContainer:
+            id: unit2_marks
+            exam: "term1"
+
+        MarksInputContainer:
+            id: term1_marks
+            exam: "unit2"
+
+        MarksInputContainer:
+            id: term2_marks
+            exam: "term2"
+    
+    MDBoxLayout:
+        padding: 0, dp(10)
+        adaptive_height: True
+
+        MDFloatingActionButton:
+            id: delete_btn
+            icon: "delete-forever"
+            md_bg_color: "#edc5c4"
+            type: "small"
+            elevation: 1
+            pos_hint: {'center_y': 0.5}
+            on_release: app.root.manager.get_screen("edit")._on_delete_button_pressed()
+        
+        Widget:
+        
+        MDRaisedButton:
+            text: "Save"
+            elevation: 1
+            on_release:
+                root._on_save_button_clicked()

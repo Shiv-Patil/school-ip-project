@@ -1,0 +1,76 @@
+#:import date datetime.date
+
+<AddYearTextField@LimitingTextField>:
+    halign: "center"
+    size_hint: None, None
+    width: dp(120)
+    pos_hint: {"center_x": 0.5}
+    height: self.minimum_height
+
+<AddYearContent>:
+    orientation: "vertical"
+    size_hint: None, None
+    size: dp(369), dp(269)
+    padding: dp(10)
+
+    MDLabel:
+        text: "Add Academic Year"
+        font_style: "H6"
+        halign: "center"
+        size_hint_y: None
+        height: self.texture_size[1]
+        padding: 0, dp(10)
+
+    AnchorLayout:
+
+        MDGridLayout:
+            cols: 2
+            adaptive_size: True
+            spacing: dp(20), dp(5)
+
+            BoundedNumericTextField:
+                id: year_field
+                hint_text: "Year"
+                max_chars: 4
+                bound: date.today().year
+            
+            AddYearTextField:
+                id: class_field
+                max_chars: 3
+                hint_text: "Standard"
+
+            AddYearTextField:
+                id: div_field
+                max_chars: 10
+                hint_text: "Division"
+            
+            BoundedNumericTextField:
+                id: rollno_field
+                max_chars: 2
+                hint_text: "Roll number"
+                bound: 99
+    
+    AnchorLayout:
+        id: root_button_box
+        size_hint_y: None
+        height: button_box.height
+        anchor_x: "right"
+
+        MDBoxLayout:
+            id: button_box
+            orientation: 'horizontal'
+            adaptive_size: True
+            spacing: dp(10)
+
+            MDFlatButton:
+                text: "Cancel"
+                on_release:
+                    root.parent.parent.dismiss()
+
+            MDRaisedButton:
+                id: add_button
+                text: "Add"
+                disabled: not year_field.text or not class_field.text or not div_field.text or not rollno_field.text or int(year_field.text) < 2000
+                elevation: 1
+                on_release:
+                    root._on_add_button_clicked()

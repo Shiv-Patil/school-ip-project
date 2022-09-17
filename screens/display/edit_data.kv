@@ -19,14 +19,11 @@
             adaptive_height: True
             spacing: dp(10)
 
-            LimitingTextField:
+            BoundedNumericTextField:
                 id: id_field
                 hint_text: "ID"
-                input_filter: "int"
-                halign: "center"
-                size_hint: None, None
                 width: dp(169//2)
-                pos_hint: {"center_x": 0.5}
+                bound: 69420
 
             MDLabel:
                 text: "ID which does not exist will be added"

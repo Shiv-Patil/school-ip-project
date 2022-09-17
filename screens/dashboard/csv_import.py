@@ -174,7 +174,7 @@ def import_csv_in_database(csv, set_progress):
             "SELECT id from academic_year WHERE student=? AND year_start=?",
             (id, data.at["year"]),
         )[0][0]
-        for exam in ["unit1", "unit2", "term1", "term2"]:
+        for exam in ("unit1", "unit2", "term1", "term2"):
             app.database.execute_query(
                 "INSERT INTO marks (academic_year, exam, mathematics, english, phyiscs, chemistry, informatics_practices) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (academic_year_id,)
