@@ -1,6 +1,207 @@
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+
+<MyLabel@Label>:
+    size_hint: None, None
+    text_size: None, None
+    font_size: sp(18)
+    size: self.texture_size
+    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+    color: "#434343"
+
 <Edit>:
     name: 'edit'
 
-    MDGridLayout:
-        cols: 1
-        md_bg_color: app.theme_cls.bg_normal
+    BoxLayout:
+        orientation: "vertical"
+
+        MDLabel:
+            size_hint_y: None
+            text: "Edit Entry"
+            halign: "center"
+            font_style: "H4"
+            height: self.texture_size[1]
+            padding: 0, dp(10)
+        
+        MDLabel:
+            size_hint_y: None
+            text: "ID: " + root._id
+            font_style: "Subtitle1"
+            halign: "center"
+            height: self.texture_size[1]
+
+        AnchorLayout:
+            padding: dp(20)
+
+            ScrollView:
+                size_hint_max_x: dp(1000)
+                effect_cls: ScrollEffect
+                scroll_type: ["bars"]
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(20)
+                    padding: dp(1), 0
+                    adaptive_height: True
+
+                    MDTextField:
+                        id: fname_field
+                        hint_text: "First Name"
+                        mode: "rectangle"
+
+                    MDTextField:
+                        id: mname_field
+                        hint_text: "Middle Name"
+                        mode: "rectangle"
+                    
+                    MDTextField:
+                        id: lname_field
+                        hint_text: "Last Name"
+                        mode: "rectangle"
+                    
+                    MDBoxLayout:
+                        adaptive_size: True
+                        spacing: dp(10)
+                    
+                        MyLabel:
+                            font_size: sp(22)
+                            text: "Academic years"
+                        
+                        MDFloatingActionButton:
+                            icon: "plus"
+                            type: "small"
+                            elevation: 1
+                            pos_hint: {'center_y': 0.5}
+                            on_release: root._on_add_button_pressed()
+                    
+                    MDSegmentedControl:
+                        pos_hint: {"center_x": .5}
+                        size_hint_y: None
+
+                        MDSegmentedControlItem:
+                            text: "2020"
+
+                        MDSegmentedControlItem:
+                            text: "2021"
+
+                        MDSegmentedControlItem:
+                            text: "2022"
+                    
+                    MDCard:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        md_bg_color: "#FBFBFB"
+                        orientation: "vertical"
+                        elevation: 1
+                        spacing: dp(10)
+                        padding: dp(20), dp(10)
+
+                        MDBoxLayout:
+                            spacing: dp(20)
+                            adaptive_height: True
+                            padding: 0, 0, 0, dp(20)
+
+                            MDTextField:
+                                id: std_field
+                                hint_text: "Standard"
+                                mode: "rectangle"
+
+                            MDTextField:
+                                id: div_field
+                                hint_text: "Division"
+                                mode: "rectangle"
+                            
+                            MDTextField:
+                                id: rollno_field
+                                hint_text: "Roll number"
+                                mode: "rectangle"
+                        
+                        MyLabel:
+                            font_size: sp(20)
+                            text: "Marks:"
+                            pos_hint: {}
+                            color: app.theme_cls.text_color
+                        
+                        MDGridLayout:
+                            cols: 5
+                            spacing: dp(10)
+                            padding: dp(10)
+                            adaptive_size: True
+                            pos_hint: {"center_x": 0.5}
+
+                            BoxLayout:
+                                orientation: "vertical"
+                                size_hint_x: None
+                                width: self.minimum_width
+                                spacing: dp(20)
+                                padding: dp(10)
+
+                                MyLabel:
+                                    text: " "
+                                
+                                MyLabel:
+                                    size_hint_y: 1
+                                    text: "Maths"
+                                
+                                MyLabel:
+                                    size_hint_y: 1
+                                    text: "English"
+                                
+                                MyLabel:
+                                    size_hint_y: 1
+                                    text: "Physics"
+                                
+                                MyLabel:
+                                    size_hint_y: 1
+                                    text: "Chemistry"
+                                
+                                MyLabel:
+                                    size_hint_y: 1
+                                    text: "IP"
+
+                            MarksInputContainer:
+                                id: unit1_marks
+                                exam: "unit1"
+
+                            MarksInputContainer:
+                                id: unit2_marks
+                                exam: "term1"
+
+                            MarksInputContainer:
+                                id: term1_marks
+                                exam: "unit2"
+
+                            MarksInputContainer:
+                                id: term2_marks
+                                exam: "term2"
+
+<MarksField>:
+    size_hint: None, None
+    width: dp(60)
+    height: self.minimum_height
+    line_anim: False
+    pos_hint: {"center_x": 0.5}
+    background_normal: "atlas://data/images/defaulttheme/textinput_active"
+
+<MarksInputContainer>:
+    orientation: "vertical"
+    spacing: dp(20)
+    padding: dp(10)
+    adaptive_size: True
+
+    MyLabel:
+        text: root.exam
+
+    MarksField:
+        id: maths_field
+    
+    MarksField:
+        id: eng_field
+    
+    MarksField:
+        id: phy_field
+    
+    MarksField:
+        id: chem_field
+    
+    MarksField:
+        id: ip_field

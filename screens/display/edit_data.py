@@ -14,7 +14,12 @@ Builder.load_file(utils.get_path(os.path.join("screens", "display", "edit_data.k
 
 class EditDataContent(MDCard):
     def _on_edit_button_clicked(self):
-        pass
+        id = int(self.ids.id_field.text)
+        if id == 0:
+            return app.toast("Invalid ID")
+        self.parent.parent.dismiss()
+        app.root.goto("edit")
+        app.root.manager.get_screen("edit")._id = str(id)
 
 
 class LimitingTextField(MDTextField):
