@@ -19,14 +19,18 @@ class Display(MDScreen):
     delete_dialog = None
     edit_dialog = None
 
-    def on_enter(self, *args):
+    def on_enter(self, *_args):
         if not self.data_table:
             self._create_table()
         if not self.menu:
             self._create_dropdown()
         delete_data.init_deletemodal(self)
         edit_data.init_editmodal(self)
-        return super().on_enter(*args)
+
+    def on_leave(self, *_args):
+        self.data_table.ids.container.children[0].scroll_x = 0
+        self.data_table.ids.container.children[0].scroll_y = 0
+        self.data_table.update_row_data(self.data_table, {})
 
     def _on_edit_button_pressed(self):
         self.edit_dialog.open()

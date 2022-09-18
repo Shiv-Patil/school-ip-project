@@ -1,3 +1,4 @@
+#:kivy 2.0.0
 #:import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <MyLabel@Label>:
@@ -38,7 +39,7 @@
                     font_style: "H4"
                     height: self.texture_size[1]
                     pos_hint: {'center_y': 0.5}
-                
+
                 MDFloatingActionButton:
                     id: deleteall_btn
                     icon: "delete-forever"
@@ -47,7 +48,7 @@
                     elevation: 1
                     pos_hint: {'center_y': 0.5}
                     on_release: app.root.manager.get_screen("edit")._on_deleteall_button_pressed()
-        
+
         MDLabel:
             size_hint_y: None
             text: "ID: " + root._id
@@ -59,6 +60,7 @@
             padding: dp(20)
 
             ScrollView:
+                id: scrollview
                 effect_cls: ScrollEffect
                 scroll_type: ["bars"]
                 smooth_scroll_end: 10
@@ -76,36 +78,39 @@
                         padding: dp(1), 0
                         adaptive_height: True
 
-                        MDTextField:
+                        LimitingTextField:
                             id: fname_field
                             hint_text: "First Name"
                             mode: "rectangle"
+                            max_chars: 20
 
-                        MDTextField:
+                        LimitingTextField:
                             id: mname_field
                             hint_text: "Middle Name"
                             mode: "rectangle"
-                        
-                        MDTextField:
+                            max_chars: 20
+
+                        LimitingTextField:
                             id: lname_field
                             hint_text: "Last Name"
                             mode: "rectangle"
-                        
+                            max_chars: 20
+
                         MDBoxLayout:
                             adaptive_size: True
                             spacing: dp(10)
-                        
+
                             MyLabel:
                                 font_size: sp(22)
                                 text: "Academic years"
-                            
+
                             MDFloatingActionButton:
                                 icon: "plus"
                                 type: "small"
                                 elevation: 1
                                 pos_hint: {'center_y': 0.5}
                                 on_release: root._on_add_button_pressed()
-                        
+
                         MDBoxLayout:
                             id: years_container
                             pos_hint: {"center_x": .5}
@@ -133,27 +138,27 @@
     MarksField:
         id: maths_field
         text: str(root.marks[0]) if root.marks[0] else ""
-        on_text: root.marks[0] = self.text
-    
+        on_text: root.marks[0] = int(self.text) if self.text else None
+
     MarksField:
         id: eng_field
         text: str(root.marks[1]) if root.marks[1] else ""
-        on_text: root.marks[1] = self.text
-    
+        on_text: root.marks[1] = int(self.text) if self.text else None
+
     MarksField:
         id: phy_field
         text: str(root.marks[2]) if root.marks[2] else ""
-        on_text: root.marks[2] = self.text
-    
+        on_text: root.marks[2] = int(self.text) if self.text else None
+
     MarksField:
         id: chem_field
         text: str(root.marks[3]) if root.marks[3] else ""
-        on_text: root.marks[3] = self.text
-    
+        on_text: root.marks[3] = int(self.text) if self.text else None
+
     MarksField:
         id: ip_field
         text: str(root.marks[4]) if root.marks[4] else ""
-        on_text: root.marks[4] = self.text
+        on_text: root.marks[4] = int(self.text) if self.text else None
 
 
 <YearContainer>:
@@ -170,27 +175,31 @@
         adaptive_height: True
         padding: 0, 0, 0, dp(20)
 
-        MDTextField:
+        LimitingTextField:
             id: std_field
             hint_text: "Standard"
             mode: "rectangle"
+            max_chars: 3
 
-        MDTextField:
+        LimitingTextField:
             id: div_field
             hint_text: "Division"
             mode: "rectangle"
-        
-        MDTextField:
+            max_chars: 10
+
+        LimitingTextField:
             id: rollno_field
             hint_text: "Roll number"
+            input_filter: "int"
             mode: "rectangle"
-    
+            max_chars: 2
+
     MyLabel:
         font_size: sp(20)
         text: "Marks:"
         pos_hint: {}
         color: app.theme_cls.text_color
-    
+
     MDGridLayout:
         cols: 5
         spacing: dp(10)
@@ -207,23 +216,23 @@
 
             MyLabel:
                 text: " "
-            
+
             MyLabel:
                 size_hint_y: 1
                 text: "Maths"
-            
+
             MyLabel:
                 size_hint_y: 1
                 text: "English"
-            
+
             MyLabel:
                 size_hint_y: 1
                 text: "Physics"
-            
+
             MyLabel:
                 size_hint_y: 1
                 text: "Chemistry"
-            
+
             MyLabel:
                 size_hint_y: 1
                 text: "IP"
@@ -243,7 +252,7 @@
         MarksInputContainer:
             id: term2_marks
             exam: "term2"
-    
+
     MDBoxLayout:
         padding: 0, dp(10)
         adaptive_height: True
@@ -256,9 +265,9 @@
             elevation: 1
             pos_hint: {'center_y': 0.5}
             on_release: app.root.manager.get_screen("edit")._on_delete_button_pressed()
-        
+
         Widget:
-        
+
         MDRaisedButton:
             text: "Save"
             elevation: 1

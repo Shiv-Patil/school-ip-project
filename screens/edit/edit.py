@@ -29,12 +29,9 @@ class Edit(MDScreen):
     delete_student_dialog = None
     years = {}
     current_year_id = None
+    current_year = None
 
     def on_pre_enter(self, *_args):
-        if self.year_content:
-            self.ids.content.remove_widget(self.year_content)
-
-    def on_enter(self, *_args):
         self.years = {}
         self.populate_data_if_exists()
         add_year.init_addmodal(self)
@@ -42,10 +39,13 @@ class Edit(MDScreen):
         delete_student.init_deletestudentmodal(self)
 
     def on_leave(self, *_args):
+        self.ids.scrollview.scroll_y = 1
         self.clean_screen()
 
     def clean_screen(self):
         self.ids.years_container.clear_widgets()
+        if self.year_content:
+            self.ids.content.remove_widget(self.year_content)
         self.ids.fname_field.text = ""
         self.ids.mname_field.text = ""
         self.ids.lname_field.text = ""
@@ -69,7 +69,63 @@ class Edit(MDScreen):
         self.delete_student_dialog.open()
 
     def _on_save_button_clicked(self):
-        pass
+        year = self.years.get(self.current_year)
+        _updated = False
+
+        _fullname = self._get_fullname()
+        if not _fullname:
+            return
+
+        std = self.year_content.ids.std_field.text.strip()
+        div = self.year_content.ids.div_field.text.strip()
+        rollno = self.year_content.ids.rollno_field.text.strip()
+        rollno = int(rollno) if rollno else None
+        if not std:
+            return app.toast("Standard cannot be blank")
+        if not div:
+            return app.toast("Divison cannot be blank")
+        if rollno is None:
+            return app.toast("Roll number cannot be blank")
+        if rollno == 0:
+            return app.toast("Roll number cannot be 0")
+        rollno = str(rollno)
+
+        query = "UPDATE academic_year SET "
+        values = []
+        if not std == year.get("class"):
+            query += "class = ?, "
+            values.append(std)
+            year["class"] = std
+        if not div == year.get("division"):
+            query += "division = ?, "
+            values.append(div)
+            year["division"] = div
+        if not rollno == year.get("rollno"):
+            query += "rollno = ?, "
+            values.append(rollno)
+            year["rollno"] = rollno
+
+        if len(values):
+            app.database.execute_query(
+                query[:-2] + " WHERE id = ?", (*values, self.current_year_id)
+            )
+            _updated = True
+
+        for exam in ("unit1", "unit2", "term1", "term2"):
+            _cur_marks = (*self.year_content.ids[exam + "_marks"].marks,)
+
+            if not year.get(exam) == _cur_marks:
+                app.database.execute_query(
+                    "UPDATE marks SET mathematics = ?, english = ?, phyiscs = ?, chemistry = ?, informatics_practices = ? WHERE id = ?",
+                    (*_cur_marks, year.get(exam + "_id")),
+                )
+                year[exam] = _cur_marks
+                _updated = True
+
+        if _updated:
+            app.toast("Data Updated")
+        else:
+            app.toast("No changes to update")
 
     def _get_fullname(self):
         fname = self.ids.fname_field.text.strip().split()
@@ -124,7 +180,9 @@ class Edit(MDScreen):
             for exam in app.database.execute_query(
                 "SELECT * FROM marks WHERE academic_year = ?", (year[0],)
             ):
-                self.years[year[5]].update({exam[2]: exam[3:]})
+                self.years[year[5]].update(
+                    {exam[2]: exam[3:], exam[2] + "_id": exam[0]}
+                )
 
             _children.append(MDSegmentedControlItem(text=str(year[5])))
 
@@ -149,7 +207,8 @@ class Edit(MDScreen):
             delete_btn.opacity = 1
             delete_btn.disabled = False
 
-        year = self.years.get(int(yearitem.text))
+        self.current_year = int(yearitem.text)
+        year = self.years.get(self.current_year)
         self.current_year_id = year.get("id")
 
         self.year_content.ids.std_field.text = year.get("class")

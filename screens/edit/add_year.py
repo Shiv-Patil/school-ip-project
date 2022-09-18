@@ -18,6 +18,8 @@ class AddYearContent(MDCard):
         rollno = int(self.ids.rollno_field.text)
         if year in self.edit_screen.years:
             return app.toast("This year already exists")
+        if rollno == 0:
+            return app.toast("Roll number can't be 0")
 
         if not isinstance(
             app.database.execute_query(

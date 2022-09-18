@@ -13,6 +13,7 @@ from kivymd.uix.behaviors import HoverBehavior, CommonElevationBehavior
 import importlib
 from kivymd.material_resources import DEVICE_TYPE
 from widgets.dialog import Dialog
+from kivy.clock import Clock
 
 app = MDApp.get_running_app()
 kv = """
@@ -124,7 +125,11 @@ class Root(MDBoxLayout):
 
     def goto(self, screen_name, side="left", _from_goback=False):
         if screen_name not in self.SCREENS:
-            app.logger.error("APP", "Screen not found: " + screen_name)
+            app.logger.error("APP: Screen not found: " + screen_name)
+            return
+
+        if screen_name == self.manager.current:
+            app.logger.warning("APP: Cannot switch to same screen: " + screen_name)
             return
 
         if not self.manager.has_screen(screen_name):
@@ -139,7 +144,11 @@ class Root(MDBoxLayout):
             self.history.append({"name": screen_name, "side": side})
 
         self.manager.transition.direction = side
-        self.manager.current = screen_name
+
+        def _change_screen(self):
+            self.manager.current = screen_name
+
+        Clock.schedule_once(lambda dt: _change_screen(self))
 
     def _handle_keyboard(self, instance, key, *args):
         if key in (1001, 27):
