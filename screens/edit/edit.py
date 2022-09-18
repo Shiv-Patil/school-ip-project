@@ -15,7 +15,7 @@ from kivymd.uix.segmentedcontrol.segmentedcontrol import (
     MDSegmentedControl,
     MDSegmentedControlItem,
 )
-from . import add_year, delete_year
+from . import add_year, delete_year, delete_student
 
 app = MDApp.get_running_app()
 
@@ -26,6 +26,7 @@ class Edit(MDScreen):
     control = ObjectProperty()
     add_dialog = None
     delete_year_dialog = None
+    delete_student_dialog = None
     years = {}
     current_year_id = None
 
@@ -34,9 +35,11 @@ class Edit(MDScreen):
             self.ids.content.remove_widget(self.year_content)
 
     def on_enter(self, *_args):
+        self.years = {}
         self.populate_data_if_exists()
         add_year.init_addmodal(self)
         delete_year.init_deleteyearmodal(self)
+        delete_student.init_deletestudentmodal(self)
 
     def on_leave(self, *_args):
         self.clean_screen()
@@ -48,7 +51,11 @@ class Edit(MDScreen):
         self.ids.lname_field.text = ""
 
     def _on_add_button_pressed(self):
+        _fullname = self._get_fullname()
+        if not _fullname:
+            return
         if len(self.years) < 14:
+            self.add_year_content.fullname = _fullname
             self.add_dialog.open()
         else:
             app.toast("Maximum number of years reached")
@@ -58,7 +65,27 @@ class Edit(MDScreen):
             return app.toast("Cannot delete last year")
         self.delete_year_dialog.open()
 
+    def _on_deleteall_button_pressed(self):
+        self.delete_student_dialog.open()
+
+    def _on_save_button_clicked(self):
+        pass
+
+    def _get_fullname(self):
+        fname = self.ids.fname_field.text.strip().split()
+        mname = self.ids.mname_field.text.strip().split()
+        lname = self.ids.lname_field.text.strip().split()
+
+        if not len(fname) == 1 or not len(mname) <= 1 or not len(lname) == 1:
+            app.toast("Invalid student name")
+            return False
+
+        return (fname[0], mname[0] if mname else "", lname[0])
+
     def populate_data_if_exists(self):
+        _btn = self.ids.deleteall_btn
+        _btn.opacity = 0
+        _btn.disabled = True
         if not self._id:
             return
 
@@ -75,7 +102,14 @@ class Edit(MDScreen):
 
         _years = app.database.execute_query(
             "SELECT * FROM academic_year WHERE student = ?", (self._id,)
-        )[:14]
+        )
+
+        if not _years or not isinstance(_years, list):
+            app.database.execute_query(
+                "DELETE FROM students WHERE id = ?",
+                (self._id,),
+            )
+            return
 
         _children = []
         self.years = {}
@@ -98,6 +132,10 @@ class Edit(MDScreen):
         self.control.bind(on_active=self.select_year)
         self.ids.years_container.add_widget(self.control)
         self.select_year(self.control, _children[0])
+
+        if len(self.years) > 0:
+            _btn.opacity = 1
+            _btn.disabled = False
 
     def select_year(self, _inst, yearitem):
         if not self.year_content:

@@ -1,0 +1,46 @@
+<DeleteStudentConfirmation>:
+    orientation: "vertical"
+    size_hint: None, None
+    size: dp(400), dp(200)
+    padding: dp(10)
+
+    MDLabel:
+        text: "Remove Student"
+        font_style: "H6"
+        halign: "center"
+        size_hint_y: None
+        height: self.texture_size[1]
+        padding: 0, dp(10)
+
+    AnchorLayout:
+
+        MDLabel:
+            text: "Remove this student? This action is irreversible."
+            font_style: "Subtitle1"
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+            color: 0.48, 0.48, 0.48, 1
+    
+    AnchorLayout:
+        id: root_button_box
+        size_hint_y: None
+        height: button_box.height
+        anchor_x: "right"
+
+        MDBoxLayout:
+            id: button_box
+            orientation: 'horizontal'
+            adaptive_size: True
+            spacing: dp(10)
+
+            MDFlatButton:
+                text: "Cancel"
+                on_release:
+                    root.parent.parent.dismiss()
+
+            MDRaisedButton:
+                text: "REMOVE"
+                elevation: 1
+                on_release:
+                    root._on_delete_button_clicked()

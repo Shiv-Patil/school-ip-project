@@ -19,6 +19,18 @@ class AddYearContent(MDCard):
         if year in self.edit_screen.years:
             return app.toast("This year already exists")
 
+        if not isinstance(
+            app.database.execute_query(
+                "SELECT * FROM students WHERE id = ?", (self.edit_screen._id,)
+            ),
+            list,
+        ):
+            if not app.database.execute_query(
+                "INSERT INTO students VALUES (?, ?, ?, ?)",
+                (self.edit_screen._id, *self.fullname),
+            ):
+                return app.toast("Error adding student")
+
         if not app.database.execute_query(
             "INSERT INTO academic_year (student, class, division, rollno, year_start) VALUES (?, ?, ?, ?, ?)",
             (self.edit_screen._id, std, div, rollno, year),

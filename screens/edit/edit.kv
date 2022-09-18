@@ -14,13 +14,39 @@
     BoxLayout:
         orientation: "vertical"
 
-        MDLabel:
+        AnchorLayout:
             size_hint_y: None
-            text: "Edit Entry"
-            halign: "center"
-            font_style: "H4"
-            height: self.texture_size[1]
-            padding: 0, dp(10)
+            size_hint_max_x: dp(1000)
+            height: title_box.height
+            padding: dp(20), 0
+
+            BoxLayout:
+                id: title_box
+                size_hint_y: None
+                height: self.minimum_height
+                padding: 0, dp(10)
+                size_hint_max_x: dp(1000)
+
+                Widget:
+                    size_hint: None, None
+                    size: deleteall_btn.size
+
+                MDLabel:
+                    size_hint_y: None
+                    text: "Edit Entry"
+                    halign: "center"
+                    font_style: "H4"
+                    height: self.texture_size[1]
+                    pos_hint: {'center_y': 0.5}
+                
+                MDFloatingActionButton:
+                    id: deleteall_btn
+                    icon: "delete-forever"
+                    md_bg_color: "#edc5c4"
+                    type: "small"
+                    elevation: 1
+                    pos_hint: {'center_y': 0.5}
+                    on_release: app.root.manager.get_screen("edit")._on_deleteall_button_pressed()
         
         MDLabel:
             size_hint_y: None
@@ -224,7 +250,7 @@
 
         MDFloatingActionButton:
             id: delete_btn
-            icon: "delete-forever"
+            icon: "delete"
             md_bg_color: "#edc5c4"
             type: "small"
             elevation: 1
@@ -237,4 +263,4 @@
             text: "Save"
             elevation: 1
             on_release:
-                root._on_save_button_clicked()
+                app.root.manager.get_screen("edit")._on_save_button_clicked()
