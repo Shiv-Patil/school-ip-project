@@ -17,7 +17,7 @@ class EditDataContent(MDCard):
             return app.toast("Invalid ID")
         self.parent.parent.dismiss()
         app.root.goto("edit")
-        app.root.manager.get_screen("edit")._id = str(id)
+        app.root.manager.get_screen("edit")._student_id = str(id)
 
 
 def init_editmodal(self):

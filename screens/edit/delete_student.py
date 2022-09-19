@@ -14,7 +14,7 @@ class DeleteStudentConfirmation(MDCard):
     def _on_delete_button_clicked(self):
         if not app.database.execute_query(
             "DELETE FROM students WHERE id = ?",
-            (self.edit_screen._id,),
+            (self.edit_screen._student_id,),
         ):
             return app.toast("Error deleting student")
 

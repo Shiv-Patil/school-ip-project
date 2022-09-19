@@ -1,6 +1,117 @@
+#:kivy 2.0.0
+
 <StudentAnalysis>:
     name: 'student_analysis'
 
-    MDGridLayout:
-        cols: 1
-        md_bg_color: app.theme_cls.bg_normal
+    BoxLayout:
+        orientation: "vertical"
+
+        AnchorLayout:
+            size_hint_y: None
+            height: title_box.height
+            padding: dp(20), 0
+
+            BoxLayout:
+                id: title_box
+                size_hint_y: None
+                height: self.minimum_height
+                padding: 0, dp(10), 0, dp(20)
+                size_hint_max_x: dp(1000)
+
+                MDLabel:
+                    size_hint_y: None
+                    text: "Student Analysis"
+                    halign: "center"
+                    font_style: "H4"
+                    height: self.texture_size[1]
+
+        AnchorLayout:
+            size_hint_y: None
+            height: info_card.height
+            padding: dp(20), 0
+
+            MDCard:
+                id: info_card
+                size_hint: 1, None
+                height: self.minimum_height
+                md_bg_color: "#FBFBFB"
+                orientation: "vertical"
+                size_hint_max_x: dp(1000)
+                elevation: 1
+                spacing: dp(10)
+                padding: dp(10)
+
+                MDLabel:
+                    size_hint_y: None
+                    text: "ID: " + root._student_id
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    size_hint_y: None
+                    text: "Name: " + root._fullname
+                    height: self.texture_size[1]
+
+        AnchorLayout:
+            size_hint_y: None
+            height: year_box.height
+            padding: dp(20), 0
+
+            MDBoxLayout:
+                id: year_box
+                padding: 0, dp(20)
+                adaptive_height: True
+                spacing: dp(10)
+                size_hint_max_x: dp(1000)
+
+                Label:
+                    text: "Year: "
+                    size_hint: None, None
+                    text_size: None, None
+                    font_size: sp(18)
+                    size: self.texture_size
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    color: "#434343"
+
+                MDDropDownItem:
+                    id: year
+                    text: "2005"
+                    size_hint: None, None
+                    width: dp(80)
+                    on_release: root.yearmenu.open()
+
+        AnchorLayout:
+            size_hint_y: None
+            height: button_box.height     
+            padding: dp(20), 0
+
+            MDStackLayout:
+                id: button_box
+                adaptive_height: True
+                spacing: dp(20)
+                size_hint_max_x: dp(1000)
+
+                MDRoundFlatButton:
+                    text: "Get total average percentage"
+                    line_width: 1.069
+
+                MDRoundFlatButton:
+                    text: "Get maths average percentage"
+                    line_width: 1.069
+
+                MDRoundFlatButton:
+                    text: "Get English average percentage"
+                    line_width: 1.069
+
+                MDRoundFlatButton:
+                    text: "Get Physics average percentage"
+                    line_width: 1.069
+
+                MDRoundFlatButton:
+                    text: "Get Chemistry average percentage"
+                    line_width: 1.069
+
+                MDRoundFlatButton:
+                    text: "Get IP percentage"
+                    line_width: 1.069
+
+        BoxLayout:

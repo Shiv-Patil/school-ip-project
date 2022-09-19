@@ -23,25 +23,25 @@ class AddYearContent(MDCard):
 
         if not isinstance(
             app.database.execute_query(
-                "SELECT * FROM students WHERE id = ?", (self.edit_screen._id,)
+                "SELECT * FROM students WHERE id = ?", (self.edit_screen._student_id,)
             ),
             list,
         ):
             if not app.database.execute_query(
                 "INSERT INTO students VALUES (?, ?, ?, ?)",
-                (self.edit_screen._id, *self.fullname),
+                (self.edit_screen._student_id, *self.fullname),
             ):
                 return app.toast("Error adding student")
 
         if not app.database.execute_query(
             "INSERT INTO academic_year (student, class, division, rollno, year_start) VALUES (?, ?, ?, ?, ?)",
-            (self.edit_screen._id, std, div, rollno, year),
+            (self.edit_screen._student_id, std, div, rollno, year),
         ):
             return app.toast("Error adding year")
 
         _id = app.database.execute_query(
             "SELECT id FROM academic_year WHERE student = ? AND year_start = ?",
-            (self.edit_screen._id, year),
+            (self.edit_screen._student_id, year),
         )[0][0]
         for exam in ("unit1", "unit2", "term1", "term2"):
             app.database.execute_query(

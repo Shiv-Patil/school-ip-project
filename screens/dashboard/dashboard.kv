@@ -1,3 +1,5 @@
+#:kivy 2.0.0
+
 <Dashboard>:
     name: "dashboard"
 
@@ -41,9 +43,9 @@
                             text: "Entries: " + root.count
                             halign: "center"
                             font_style: "Subtitle1"
-                        
+
                         MDAnchorLayout:
-                        
+
                             MDRectangleFlatButton:
                                 id: show_btn
                                 text: "Show/Edit entries"
@@ -67,17 +69,17 @@
                                 orientation: "vertical"
                                 spacing: dp(10)
                                 adaptive_size: True
-                                
+
                                 MDRectangleFlatButton:
                                     text: "Import CSV"
                                     line_width: 1.069
                                     on_release: root._import_csv_btn_pressed()
-                                    
+
                                 MDRectangleFlatButton:
                                     text: "Export CSV"
                                     line_width: 1.069
                                     on_release: root._export_csv_btn_pressed()
-            
+
             MDBoxLayout:
                 orientation: "horizontal"
                 spacing: dp(20)
@@ -105,7 +107,7 @@
                         size_hint: 0.7, 0.5
                         size_hint_min_x: class_btn.width + dp(40)
                         size_hint_min_y: class_btn.height + dp(40)
-                        
+
                         MDAnchorLayout:
 
                             MDRectangleFlatButton:

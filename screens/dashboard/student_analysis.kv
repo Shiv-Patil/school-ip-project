@@ -1,13 +1,13 @@
 #:kivy 2.0.0
 
-<DeleteDataConfirmation>:
+<StudentAnalysisContent>:
     orientation: "vertical"
     size_hint: None, None
-    size: dp(400), dp(200)
+    size: dp(400), dp(269)
     padding: dp(10)
 
     MDLabel:
-        text: "Delete all data"
+        text: "Student Analysis"
         font_style: "H6"
         halign: "center"
         size_hint_y: None
@@ -16,13 +16,11 @@
 
     AnchorLayout:
 
-        MDLabel:
-            text: "Delete all entries? This action is irreversible."
-            font_style: "Subtitle1"
-            halign: "center"
-            size_hint_y: None
-            height: self.texture_size[1]
-            color: 0.48, 0.48, 0.48, 1
+        BoundedNumericTextField:
+            id: id_field
+            hint_text: "Student ID"
+            width: dp(169//2)
+            bound: 69420
 
     AnchorLayout:
         id: root_button_box
@@ -42,7 +40,9 @@
                     root.parent.parent.dismiss()
 
             MDRaisedButton:
-                text: "DELETE"
+                id: edit_button
+                text: "Proceed"
+                disabled: not id_field.text
                 elevation: 1
                 on_release:
-                    root._on_delete_button_clicked()
+                    root._on_proceed_button_clicked()

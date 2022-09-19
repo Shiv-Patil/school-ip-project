@@ -1,3 +1,5 @@
+#:kivy 2.0.0
+
 <Display>:
     name: 'display'
 
@@ -13,7 +15,7 @@
             font_style: "H4"
             height: self.texture_size[1]
             padding: 0, dp(10)
-        
+
         AnchorLayout:
             size_hint_y: None
             height: controls_container.height + self.padding[1] + self.padding[3]
@@ -57,7 +59,7 @@
                                 hint_text: "ID / Name"
                                 size_hint: None, None
                                 width: dp(269)
-                        
+
                         AnchorLayout:
                             size_hint_x: None
                             width: class_field.width
@@ -67,7 +69,7 @@
                                 hint_text: "Class"
                                 size_hint: None, None
                                 width: dp(80)
-                        
+
                         AnchorLayout:
                             size_hint_x: None
                             width: num_results.width
@@ -78,7 +80,7 @@
                                 size_hint: None, None
                                 width: dp(80)
                                 on_release: root.menu.open()
-                        
+
                         AnchorLayout:
                             size_hint_x: None
                             width: show_btn.width

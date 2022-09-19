@@ -21,7 +21,7 @@ app = MDApp.get_running_app()
 
 
 class Edit(MDScreen):
-    _id = StringProperty("")
+    _student_id = StringProperty("")
     year_content = ObjectProperty()
     control = ObjectProperty()
     add_dialog = None
@@ -142,11 +142,11 @@ class Edit(MDScreen):
         _btn = self.ids.deleteall_btn
         _btn.opacity = 0
         _btn.disabled = True
-        if not self._id:
+        if not self._student_id:
             return
 
         student = app.database.execute_query(
-            "SELECT * FROM students WHERE id = ?", (self._id,)
+            "SELECT * FROM students WHERE id = ?", (self._student_id,)
         )
         if not isinstance(student, list) or not student:
             return
@@ -157,13 +157,13 @@ class Edit(MDScreen):
         self.ids.lname_field.text = student[3]
 
         _years = app.database.execute_query(
-            "SELECT * FROM academic_year WHERE student = ?", (self._id,)
+            "SELECT * FROM academic_year WHERE student = ?", (self._student_id,)
         )
 
         if not _years or not isinstance(_years, list):
             app.database.execute_query(
                 "DELETE FROM students WHERE id = ?",
-                (self._id,),
+                (self._student_id,),
             )
             return
 
