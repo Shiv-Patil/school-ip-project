@@ -1,7 +1,10 @@
+from turtle import width
 from kivymd.uix.screen import MDScreen
 from kivy.lang import Builder
 import utils, os
 from kivy.properties import StringProperty
+from kivymd.uix.datatables import MDDataTable
+from kivy.uix.scrollview import ScrollView
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.effects.scroll import ScrollEffect
 from kivy.metrics import dp
@@ -14,12 +17,32 @@ app = MDApp.get_running_app()
 class StudentAnalysis(MDScreen):
     _student_id = StringProperty("")
     _fullname = StringProperty("")
+    _year_id = StringProperty("")
     yearmenu = None
+    data_table = None
 
     def on_pre_enter(self, *_args):
         if not self.yearmenu:
             self._create_dropdown()
+        if not self.data_table:
+            self._create_table()
         self._populate_years()
+
+    def _populate_rows(self, year):
+        exams = app.database.execute_query(
+            "SELECT * from marks WHERE academic_year = ?", (self._year_id,)
+        )
+        if not isinstance(exams, list):
+            return
+
+        row_data = (
+            *zip(
+                ("Mathematics", "English", "Physics", "Chemistry", "IP"),
+                *(marks[3:] for marks in exams)
+            ),
+        )
+
+        self.data_table.update_row_data(self.data_table, row_data)
 
     def _populate_years(self):
         years = app.database.execute_query(
@@ -29,11 +52,13 @@ class StudentAnalysis(MDScreen):
         if not isinstance(years, list):
             return app.root.goback()
 
-        self.ids.year.set_item(str(years[0][5]))
-
-        def set_item(text_item):
+        def set_item(text_item, yearid):
             Clock.schedule_once(lambda dt: self.yearmenu.dismiss(), 0.169)
             Clock.schedule_once(lambda dt: self.ids.year.set_item(text_item), 0.1)
+            self._year_id = yearid
+            self._populate_rows(int(text_item))
+
+        set_item(str(years[0][5]), str(years[0][0]))
 
         menu_items = []
         for year in years:
@@ -42,7 +67,7 @@ class StudentAnalysis(MDScreen):
                     "viewclass": "OneLineListItem",
                     "text": str(year[5]),
                     "height": dp(52),
-                    "on_release": lambda x=str(year[5]): set_item(x),
+                    "on_release": lambda x=str(year[5]), y=str(year[0]): set_item(x, y),
                 }
             )
 
@@ -59,6 +84,30 @@ class StudentAnalysis(MDScreen):
         )
         self.yearmenu.ids.md_menu.effect_cls = ScrollEffect
         self.yearmenu.ids.md_menu.children[0].padding = (0, 0, 0, 0)
+
+    def _create_table(self):
+        self.data_table = MDDataTable(
+            size_hint_max_x=dp(850),
+            elevation=1,
+            rows_num=5,
+            background_color_selected_cell=app.theme_cls.bg_normal,
+            effect_cls=ScrollEffect,
+            column_data=[
+                ("Subject", dp(40)),
+                ("Unit 1", dp(30)),
+                ("Term 1", dp(30)),
+                ("Unit 2", dp(30)),
+                ("Term 2", dp(30)),
+            ],
+        )
+
+        self.data_table.ids.container.children[0].scroll_type = ["bars", "content"]
+        self.data_table.ids.container.children[0].bar_width = 6
+        self.data_table.ids.container.children[0].do_scroll_y = False
+        for child in self.data_table.ids.container.children[1].ids.header.children:
+            child.tooltip_text = ""
+        self.data_table.ids.container.children[1].ids.first_cell.tooltip_text = ""
+        self.ids.datatable_wrapper.add_widget(self.data_table)
 
 
 Builder.load_file(

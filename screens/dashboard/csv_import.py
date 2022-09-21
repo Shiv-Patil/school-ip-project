@@ -46,7 +46,9 @@ class ImportModalContainer(MDCard):
         self._choosing_file = True
         app.start_task(
             lambda *args: filechooser.open_file(
-                on_selection=lambda f: self._file_selected(f[0])
+                on_selection=lambda f: self._file_selected(
+                    f[0] if isinstance(f, list) else f
+                )
             ),
             _after,
             show_loading_anim=False,

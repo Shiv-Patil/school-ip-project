@@ -78,40 +78,92 @@
                     size_hint: None, None
                     width: dp(80)
                     on_release: root.yearmenu.open()
+        
+        ScrollView:
+            id: scrollview
+            effect_cls: ScrollEffect
+            scroll_type: ["bars"]
+            smooth_scroll_end: 10
+            bar_width: 10
 
-        AnchorLayout:
-            size_hint_y: None
-            height: button_box.height     
-            padding: dp(20), 0
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+        
+                AnchorLayout:
+                    id: datatable_wrapper
+                    size_hint_y: None
+                    height: dp(360)
+                    padding: dp(20), 0, dp(20), dp(20)
 
-            MDStackLayout:
-                id: button_box
-                adaptive_height: True
-                spacing: dp(20)
-                size_hint_max_x: dp(1000)
+                AnchorLayout:
+                    size_hint_y: None
+                    height: button_box.height     
+                    padding: dp(20), 0
 
-                MDRoundFlatButton:
-                    text: "Get total average percentage"
-                    line_width: 1.069
+                    MDStackLayout:
+                        id: button_box
+                        adaptive_height: True
+                        spacing: dp(20)
+                        size_hint_max_x: dp(1000)
 
-                MDRoundFlatButton:
-                    text: "Get maths average percentage"
-                    line_width: 1.069
+                        MDRoundFlatButton:
+                            text: "Get total average percentage"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get unit 1 average percentage"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get term 1 average percentage"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get unit 2 average percentage"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get term 2 average percentage"
+                            line_width: 1.069
 
-                MDRoundFlatButton:
-                    text: "Get English average percentage"
-                    line_width: 1.069
+                        MDRoundFlatButton:
+                            text: "Get maths average percentage"
+                            line_width: 1.069
 
-                MDRoundFlatButton:
-                    text: "Get Physics average percentage"
-                    line_width: 1.069
+                        MDRoundFlatButton:
+                            text: "Get English average percentage"
+                            line_width: 1.069
 
-                MDRoundFlatButton:
-                    text: "Get Chemistry average percentage"
-                    line_width: 1.069
+                        MDRoundFlatButton:
+                            text: "Get Physics average percentage"
+                            line_width: 1.069
 
-                MDRoundFlatButton:
-                    text: "Get IP percentage"
-                    line_width: 1.069
+                        MDRoundFlatButton:
+                            text: "Get Chemistry average percentage"
+                            line_width: 1.069
 
-        BoxLayout:
+                        MDRoundFlatButton:
+                            text: "Get IP average percentage"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get overall grade"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get unit 1 grade"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get term 1 grade"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get unit 2 grade"
+                            line_width: 1.069
+                        
+                        MDRoundFlatButton:
+                            text: "Get term 2 grade"
+                            line_width: 1.069

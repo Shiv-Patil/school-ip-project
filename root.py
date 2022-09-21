@@ -20,6 +20,7 @@ kv = """
 #:import Window kivy.core.window.Window
 #:import get_path utils.get_path
 #:import os os
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <TitleBtn, ElevationTitleBtn>:
     icon: "circle"
