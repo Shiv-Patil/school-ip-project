@@ -11,7 +11,7 @@ from kivy.lang import Builder
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.behaviors import HoverBehavior, CommonElevationBehavior
 import importlib
-from kivymd.material_resources import DEVICE_TYPE
+from kivy.utils import platform
 from widgets.dialog import Dialog
 from kivy.clock import Clock
 
@@ -177,7 +177,7 @@ class Root(MDBoxLayout):
 
     def _set_custom_titlebar(self):
         wid = self.title_bar
-        if DEVICE_TYPE == "desktop":
+        if platform == "linux":
             if not Window.custom_titlebar:
                 Window.custom_titlebar = True
                 if Window.set_custom_titlebar(wid):
