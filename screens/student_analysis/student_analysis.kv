@@ -99,7 +99,14 @@
                         id: datatable_wrapper
                         size_hint_y: None
                         height: dp(360)
-                        padding: dp(20), 0, dp(20), dp(20)
+                        padding: dp(20), 0
+                    
+                    MDLabel:
+                        adaptive_height: True
+                        text: root.resname + " — " + root.resvalue
+                        padding: 0, dp(20)
+                        halign: "center"
+                        font_style: "Subtitle1"
 
                     MDStackLayout:
                         id: button_box
@@ -110,59 +117,104 @@
                         MDRoundFlatButton:
                             text: "Get total average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Total Average"
+                                root.resvalue = str(root.marks.mean().mean().round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get unit 1 average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Unit1 Average"
+                                root.resvalue = str(root.marks.mean().unit1.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get term 1 average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Term1 Average"
+                                root.resvalue = str(root.marks.mean().term1.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get unit 2 average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Unit2 Average"
+                                root.resvalue = str(root.marks.mean().unit2.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get term 2 average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Term2 Average"
+                                root.resvalue = str(root.marks.mean().term2.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get maths average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Maths Average"
+                                root.resvalue = str(root.marks.mean(1).Maths.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get English average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "English Average"
+                                root.resvalue = str(root.marks.mean(1).English.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get Physics average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Physics Average"
+                                root.resvalue = str(root.marks.mean(1).Physics.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get Chemistry average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Chemistry Average"
+                                root.resvalue = str(root.marks.mean(1).Chemistry.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get IP average percentage"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "IP Average"
+                                root.resvalue = str(root.marks.mean(1).IP.round(2)) + " %"
 
                         MDRoundFlatButton:
                             text: "Get overall grade"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Overall grade"
+                                root.resvalue = root.get_grade(root.marks.mean().mean().round(2))
 
                         MDRoundFlatButton:
                             text: "Get unit 1 grade"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Unit1 grade"
+                                root.resvalue = root.get_grade(root.marks.mean().unit1.round(2))
 
                         MDRoundFlatButton:
                             text: "Get term 1 grade"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Term1 grade"
+                                root.resvalue = root.get_grade(root.marks.mean().term1.round(2))
 
                         MDRoundFlatButton:
                             text: "Get unit 2 grade"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Unit2 grade"
+                                root.resvalue = root.get_grade(root.marks.mean().unit2.round(2))
 
                         MDRoundFlatButton:
                             text: "Get term 2 grade"
                             line_width: 1.069
+                            on_release:
+                                root.resname = "Term2 grade"
+                                root.resvalue = root.get_grade(root.marks.mean().term2.round(2))

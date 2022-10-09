@@ -4,7 +4,7 @@ from kivy.lang import Builder
 import utils, os
 from kivy.properties import StringProperty
 from kivymd.uix.datatables import MDDataTable
-from kivy.uix.scrollview import ScrollView
+import pandas as pd
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.effects.scroll import ScrollEffect
 from kivy.metrics import dp
@@ -20,8 +20,11 @@ class StudentAnalysis(MDScreen):
     _year_id = StringProperty("")
     yearmenu = None
     data_table = None
+    resname = StringProperty("Total Average")
+    resvalue = StringProperty("69")
+    marks = None
 
-    def on_enter(self, *_args):
+    def on_pre_enter(self, *_args):
         if not self.yearmenu:
             self._create_dropdown()
         if not self.data_table:
@@ -35,14 +38,40 @@ class StudentAnalysis(MDScreen):
         if not isinstance(exams, list):
             return
 
+        marks = {i[2]: i[3:] for i in exams}
+        self.marks = pd.DataFrame(
+            marks,
+            index=("Maths", "English", "Physics", "Chemistry", "IP"),
+        )
+        self.resvalue = str(self.marks.mean().mean().round(2)) + " %"
+
         row_data = (
             *zip(
                 ("Mathematics", "English", "Physics", "Chemistry", "IP"),
-                *(marks[3:] for marks in exams)
+                *(marks.get(exam) for exam in ("unit1", "term1", "unit2", "term2"))
             ),
         )
 
         self.data_table.update_row_data(self.data_table, row_data)
+
+    def get_grade(self, p):
+        return (
+            "A+"
+            if p > 93
+            else "A"
+            if p > 88
+            else "B+"
+            if p > 84
+            else "B"
+            if p > 78
+            else "C"
+            if p > 70
+            else "D"
+            if p > 60
+            else "E"
+            if p > 40
+            else "F"
+        )
 
     def _populate_years(self):
         years = app.database.execute_query(
@@ -103,6 +132,7 @@ class StudentAnalysis(MDScreen):
 
         self.data_table.ids.container.children[0].scroll_type = ["content", "bars"]
         self.data_table.ids.container.children[0].bar_width = 6
+        self.data_table.ids.container.children[0].do_scroll_x = False
         self.data_table.ids.container.children[0].do_scroll_y = False
         for child in self.data_table.ids.container.children[1].ids.header.children:
             child.tooltip_text = ""
