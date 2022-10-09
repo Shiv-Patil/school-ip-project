@@ -21,7 +21,7 @@ class StudentAnalysis(MDScreen):
     yearmenu = None
     data_table = None
 
-    def on_pre_enter(self, *_args):
+    def on_enter(self, *_args):
         if not self.yearmenu:
             self._create_dropdown()
         if not self.data_table:
@@ -87,21 +87,21 @@ class StudentAnalysis(MDScreen):
 
     def _create_table(self):
         self.data_table = MDDataTable(
-            size_hint_max_x=dp(850),
+            size_hint_max_x=dp(600),
             elevation=1,
             rows_num=5,
             background_color_selected_cell=app.theme_cls.bg_normal,
             effect_cls=ScrollEffect,
             column_data=[
-                ("Subject", dp(40)),
-                ("Unit 1", dp(30)),
-                ("Term 1", dp(30)),
-                ("Unit 2", dp(30)),
-                ("Term 2", dp(30)),
+                ("Subject", dp(30)),
+                ("Unit 1", dp(20)),
+                ("Term 1", dp(20)),
+                ("Unit 2", dp(20)),
+                ("Term 2", dp(20)),
             ],
         )
 
-        self.data_table.ids.container.children[0].scroll_type = ["bars", "content"]
+        self.data_table.ids.container.children[0].scroll_type = ["content", "bars"]
         self.data_table.ids.container.children[0].bar_width = 6
         self.data_table.ids.container.children[0].do_scroll_y = False
         for child in self.data_table.ids.container.children[1].ids.header.children:
