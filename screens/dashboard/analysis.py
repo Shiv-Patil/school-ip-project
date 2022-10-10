@@ -7,12 +7,10 @@ import os
 
 app = MDApp.get_running_app()
 
-Builder.load_file(
-    utils.get_path(os.path.join("screens", "dashboard", "student_analysis.kv"))
-)
+Builder.load_file(utils.get_path(os.path.join("screens", "dashboard", "analysis.kv")))
 
 
-class StudentAnalysisContent(MDCard):
+class AnalysisContent(MDCard):
     def _on_proceed_button_clicked(self):
         _id = int(self.ids.id_field.text.strip())
         student = app.database.execute_query(
@@ -24,19 +22,19 @@ class StudentAnalysisContent(MDCard):
         ):
             self.parent.parent.dismiss()
             fullname = student[0][1] + " " + student[0][2] + " " + student[0][3]
-            app.root.goto("student_analysis")
-            student_analysis = app.root.manager.get_screen("student_analysis")
+            app.root.goto("analysis")
+            student_analysis = app.root.manager.get_screen("analysis")
             student_analysis._student_id = str(_id)
             student_analysis._fullname = fullname
             return
         app.toast("ID does not exist")
 
 
-def init_studentanalysismodal(self):
-    if not self.student_analysis_dialog:
-        self.student_analysis_content = StudentAnalysisContent()
-        self.student_analysis_dialog = Dialog(
+def init_analysismodal(self):
+    if not self.analysis_dialog:
+        self.analysis_content = AnalysisContent()
+        self.analysis_dialog = Dialog(
             auto_dismiss=True,
-            content_cls=self.student_analysis_content,
+            content_cls=self.analysis_content,
             overlay_color=(0, 0, 0, 0.6),
         )

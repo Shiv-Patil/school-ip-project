@@ -3,7 +3,7 @@ from kivy.lang import Builder
 import utils, os
 from kivymd.app import MDApp
 from kivy.properties import StringProperty
-from . import csv_import, csv_export, student_analysis
+from . import csv_import, csv_export, analysis
 from plyer import filechooser
 from kivy.clock import mainthread
 
@@ -13,7 +13,7 @@ app = MDApp.get_running_app()
 class Dashboard(MDScreen):
     dialog = None
     import_csv_container = None
-    student_analysis_dialog = None
+    analysis_dialog = None
     count = StringProperty("0")
 
     def on_pre_enter(self):
@@ -28,7 +28,7 @@ class Dashboard(MDScreen):
 
     def on_enter(self, *args):
         csv_import.init_importmodal(self)
-        student_analysis.init_studentanalysismodal(self)
+        analysis.init_analysismodal(self)
 
     def _show_btn_pressed(self):
         app.root.goto("display")
@@ -53,11 +53,11 @@ class Dashboard(MDScreen):
             ),
         )
 
-    def _student_analysis_btn_pressed(self):
-        self.student_analysis_dialog.open()
+    def _analysis_btn_pressed(self):
+        self.analysis_dialog.open()
 
-    def _class_analysis_btn_pressed(self):
-        pass
+    def _visualisation_btn_pressed(self):
+        app.root.goto("visualisation")
 
 
 Builder.load_file(utils.get_path(os.path.join("screens", "dashboard", "dashboard.kv")))

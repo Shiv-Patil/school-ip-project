@@ -95,8 +95,8 @@ class Root(MDBoxLayout):
         "dashboard": "Dashboard",
         "display": "Display",
         "edit": "Edit",
-        "student_analysis": "StudentAnalysis",
-        "class_analysis": "ClassAnalysis",
+        "analysis": "Analysis",
+        "visualisation": "Visualisation",
     }
 
     def __init__(self, **kwargs):

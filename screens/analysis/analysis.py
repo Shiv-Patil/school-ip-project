@@ -14,7 +14,7 @@ from kivymd.app import MDApp
 app = MDApp.get_running_app()
 
 
-class StudentAnalysis(MDScreen):
+class Analysis(MDScreen):
     _student_id = StringProperty("")
     _fullname = StringProperty("")
     _year_id = StringProperty("")
@@ -43,6 +43,7 @@ class StudentAnalysis(MDScreen):
             marks,
             index=("Maths", "English", "Physics", "Chemistry", "IP"),
         )
+        self.resname = "Total Average"
         self.resvalue = str(self.marks.mean().mean().round(2)) + " %"
 
         row_data = (
@@ -140,6 +141,4 @@ class StudentAnalysis(MDScreen):
         self.ids.datatable_wrapper.add_widget(self.data_table)
 
 
-Builder.load_file(
-    utils.get_path(os.path.join("screens", "student_analysis", "student_analysis.kv"))
-)
+Builder.load_file(utils.get_path(os.path.join("screens", "analysis", "analysis.kv")))
