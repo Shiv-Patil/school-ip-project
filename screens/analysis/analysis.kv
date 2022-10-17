@@ -6,24 +6,13 @@
     BoxLayout:
         orientation: "vertical"
 
-        AnchorLayout:
+        MDLabel:
             size_hint_y: None
-            height: title_box.height
-            padding: dp(20), 0
-
-            BoxLayout:
-                id: title_box
-                size_hint_y: None
-                height: self.minimum_height
-                padding: 0, dp(10), 0, dp(20)
-                size_hint_max_x: dp(1000)
-
-                MDLabel:
-                    size_hint_y: None
-                    text: "Analysis"
-                    halign: "center"
-                    font_style: "H4"
-                    height: self.texture_size[1]
+            text: "Analysis"
+            halign: "center"
+            font_style: "H4"
+            height: self.texture_size[1]
+            padding: 0, dp(15)
 
         AnchorLayout:
             size_hint_y: None

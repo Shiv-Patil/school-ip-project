@@ -7,6 +7,7 @@ from widgets.toast import Toast
 import logging
 
 logging.getLogger("PIL").setLevel(logging.ERROR)
+logging.getLogger("matplotlib").setLevel(logging.ERROR)
 
 
 class StudentAnalysis(MDApp):

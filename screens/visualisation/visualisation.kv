@@ -14,4 +14,136 @@
             height: self.texture_size[1]
             padding: 0, dp(15)
         
-        BoxLayout:
+        AnchorLayout:
+            size_hint_y: None
+            height: info_card.height
+            padding: dp(20), 0
+
+            MDCard:
+                id: info_card
+                size_hint: 1, None
+                height: self.minimum_height
+                md_bg_color: "#FBFBFB"
+                orientation: "vertical"
+                size_hint_max_x: dp(1000)
+                elevation: 1
+                spacing: dp(10)
+                padding: dp(10)
+
+                MDLabel:
+                    size_hint_y: None
+                    text: "ID: " + root._student_id
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    size_hint_y: None
+                    text: "Name: " + root._fullname
+                    height: self.texture_size[1]
+        
+        AnchorLayout:
+            size_hint_y: None
+            height: year_box.height
+            padding: dp(20), 0
+
+            MDBoxLayout:
+                id: year_box
+                padding: 0, dp(20)
+                adaptive_height: True
+                spacing: dp(10)
+                size_hint_max_x: dp(1000)
+
+                Label:
+                    text: "Year: "
+                    size_hint: None, None
+                    text_size: None, None
+                    font_size: sp(18)
+                    size: self.texture_size
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    color: "#434343"
+
+                MDDropDownItem:
+                    id: year
+                    text: "2005"
+                    size_hint: None, None
+                    width: dp(80)
+                    on_release: root.yearmenu.open()
+
+        AnchorLayout:
+            anchor_y: "top"
+
+            GridLayout:
+                size_hint_max_x: dp(1000)
+                cols: 3
+                size_hint_y: None
+                height: self.minimum_height
+
+                BoxLayout:
+                    id: bar_graphs_section
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(20)
+
+                    MDLabel:
+                        size_hint_y: None
+                        text: "Bar Graphs"
+                        halign: "center"
+                        font_style: "H5"
+                        height: self.texture_size[1]
+                        padding: 0, dp(5)
+
+                    MDRoundFlatButton:
+                        text: "Student marks per subject"
+                        line_width: 1.069
+                        pos_hint: {"center_x": 0.5}
+                        on_release:
+                            root.bar_marks_per_sub()
+
+                    MDRoundFlatButton:
+                        text: "Student marks vs\nClass average marks\nExamwise"
+                        line_width: 1.069
+                        pos_hint: {"center_x": 0.5}
+                        on_release:
+                            root.bar_marks_vs_avg_examwise()
+
+                    MDRoundFlatButton:
+                        text: "Student marks vs\nClass average marks\nSubjectwise"
+                        line_width: 1.069
+                        pos_hint: {"center_x": 0.5}
+                        on_release:
+                            root.bar_marks_vs_avg_subwise()
+                
+                MDSeparator:
+                    orientation: "vertical"
+
+                AnchorLayout:
+                    anchor_y: "top"
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(20)
+
+                        MDLabel:
+                            size_hint_y: None
+                            text: "Line Graphs"
+                            halign: "center"
+                            font_style: "H5"
+                            height: self.texture_size[1]
+                            padding: 0, dp(5)
+
+                        MDRoundFlatButton:
+                            text: "Student performance\noverall"
+                            line_width: 1.069
+                            pos_hint: {"center_x": 0.5}
+                            on_release:
+                                root.line_perf_overall()
+
+                        MDRoundFlatButton:
+                            text: "Student performace\nsubjectwise"
+                            line_width: 1.069
+                            pos_hint: {"center_x": 0.5}
+                            on_release:
+                                root.line_perf_subwise()
+        

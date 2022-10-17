@@ -105,6 +105,8 @@ class Root(MDBoxLayout):
         self.title_bar = TitleBar()
         Window.add_widget(self.title_bar)
 
+        self._set_custom_titlebar()
+
         self.manager = MDScreenManager()
         self.add_widget(self.manager)
         self.manager.transition = CardTransition()
@@ -114,11 +116,12 @@ class Root(MDBoxLayout):
 
         self.loading_widget = Dialog(content_cls=LoadingImage())
 
-        self._set_custom_titlebar()
-
-    def show_loading(self, anim=True, overlay_color=(0, 0, 0, 0.4)):
+    def show_loading(
+        self, anim=True, overlay_color=(0, 0, 0, 0.4), onopen=lambda *args: 0
+    ):
         self.loading_widget.content_cls.opacity = 0 if not anim else 1
         self.loading_widget.overlay_color = overlay_color
+        self.loading_widget.bind(on_open=onopen)
         self.loading_widget.open()
 
     def hide_loading(self):

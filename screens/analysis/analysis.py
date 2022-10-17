@@ -104,6 +104,11 @@ class Analysis(MDScreen):
         self.yearmenu.items = menu_items
 
     def _create_dropdown(self):
+        if self.manager.has_screen("visualisation"):
+            scrn = app.root.manager.get_screen("visualisation")
+            if scrn.yearmenu:
+                self.yearmenu = scrn.yearmenu
+                return
         self.yearmenu = MDDropdownMenu(
             caller=self.ids.year,
             position="bottom",

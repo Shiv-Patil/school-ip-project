@@ -54,10 +54,12 @@ class Dashboard(MDScreen):
         )
 
     def _analysis_btn_pressed(self):
+        self.analysis_dialog.content_cls.action = "Analysis"
         self.analysis_dialog.open()
 
     def _visualisation_btn_pressed(self):
-        app.root.goto("visualisation")
+        self.analysis_dialog.content_cls.action = "Visualisation"
+        self.analysis_dialog.open()
 
 
 Builder.load_file(utils.get_path(os.path.join("screens", "dashboard", "dashboard.kv")))
