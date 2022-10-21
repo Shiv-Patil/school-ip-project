@@ -1,5 +1,5 @@
 from turtle import width
-from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 import utils, os
 from kivy.properties import StringProperty
@@ -14,7 +14,7 @@ from kivymd.app import MDApp
 app = MDApp.get_running_app()
 
 
-class Analysis(MDScreen):
+class Analysis(Screen):
     _student_id = StringProperty("")
     _fullname = StringProperty("")
     _year_id = StringProperty("")
@@ -31,10 +31,11 @@ class Analysis(MDScreen):
             self._create_table()
         self._populate_years()
 
-    def _populate_rows(self, year):
+    def _populate_rows(self):
         exams = app.database.execute_query(
             "SELECT * from marks WHERE academic_year = ?", (self._year_id,)
         )
+
         if not isinstance(exams, list):
             return
 
@@ -44,7 +45,7 @@ class Analysis(MDScreen):
             index=("Maths", "English", "Physics", "Chemistry", "IP"),
         )
         self.resname = "Total Average"
-        self.resvalue = str(self.marks.mean().mean().round(2)) + " %"
+        self.resvalue = str(round(self.marks.mean().mean(), 2)) + " %"
 
         row_data = (
             *zip(
@@ -57,21 +58,23 @@ class Analysis(MDScreen):
 
     def get_grade(self, p):
         return (
-            "A+"
-            if p > 93
-            else "A"
-            if p > 88
-            else "B+"
-            if p > 84
-            else "B"
-            if p > 78
-            else "C"
+            "A1"
+            if p > 90
+            else "A2"
+            if p > 80
+            else "B1"
             if p > 70
-            else "D"
+            else "B2"
             if p > 60
-            else "E"
+            else "C1"
+            if p > 50
+            else "C2"
             if p > 40
-            else "F"
+            else "D"
+            if p > 32
+            else "E"
+            if p > 0
+            else "Not graded"
         )
 
     def _populate_years(self):
@@ -86,7 +89,7 @@ class Analysis(MDScreen):
             Clock.schedule_once(lambda dt: self.yearmenu.dismiss(), 0.169)
             Clock.schedule_once(lambda dt: self.ids.year.set_item(text_item), 0.1)
             self._year_id = yearid
-            self._populate_rows(int(text_item))
+            self._populate_rows()
 
         set_item(str(years[0][5]), str(years[0][0]))
 
@@ -125,7 +128,6 @@ class Analysis(MDScreen):
             size_hint_max_x=dp(600),
             elevation=1,
             rows_num=5,
-            background_color_selected_cell=app.theme_cls.bg_normal,
             effect_cls=ScrollEffect,
             column_data=[
                 ("Subject", dp(30)),

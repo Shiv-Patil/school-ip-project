@@ -7,8 +7,9 @@ from kivy.resources import resource_add_path
 import widgets
 
 Config.set("kivy", "exit_on_escape", "0")
-Config.set("graphics", "minimum_width", "530")
-Config.set("graphics", "minimum_height", "310")
+Config.set("graphics", "minimum_width", "800")
+Config.set("graphics", "minimum_height", "600")
+Config.set("input", "mouse", "mouse,disable_multitouch")
 
 
 def get_path(relative_path):

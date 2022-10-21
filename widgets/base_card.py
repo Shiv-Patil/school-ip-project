@@ -8,7 +8,7 @@ kv = """
     elevation: 2.4
     shadow_softness: 16
     radius: 8
-    md_bg_color: app.theme_cls.bg_light
+    md_bg_color: app.theme_cls.bg_dark
 """
 Builder.load_string(kv)
 

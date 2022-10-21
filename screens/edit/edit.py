@@ -1,4 +1,4 @@
-from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextFieldRect
@@ -20,7 +20,7 @@ from . import add_year, delete_year, delete_student
 app = MDApp.get_running_app()
 
 
-class Edit(MDScreen):
+class Edit(Screen):
     _student_id = StringProperty("")
     year_content = ObjectProperty()
     control = ObjectProperty()
@@ -215,8 +215,8 @@ class Edit(MDScreen):
         self.year_content.ids.div_field.text = year.get("division")
         self.year_content.ids.rollno_field.text = year.get("rollno")
         self.year_content.ids.unit1_marks.marks = year.get("unit1")
-        self.year_content.ids.unit2_marks.marks = year.get("unit2")
         self.year_content.ids.term1_marks.marks = year.get("term1")
+        self.year_content.ids.unit2_marks.marks = year.get("unit2")
         self.year_content.ids.term2_marks.marks = year.get("term2")
 
         if not self.year_content.parent:

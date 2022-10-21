@@ -19,12 +19,22 @@ class StudentAnalysis(MDApp):
     _toast = None
 
     def build(self):
+        self.theme_cls.theme_style_switch_animation = True
+        self.theme_cls.theme_style = "Light"
         self.theme_cls.colors = utils.colors
         self.theme_cls.primary_palette = "Teal"
         self.theme_cls.material_style = "M3"
         self.root = importlib.import_module("root").Root()
         self.database = importlib.import_module("sqloperator").SqlOperator()
         self._toast = Toast()
+
+    def open_settings(self, *args):
+        pass
+
+    def switch_theme(self):
+        self.theme_cls.theme_style = (
+            "Dark" if self.theme_cls.theme_style == "Light" else "Light"
+        )
 
     def on_start(self):
         self.root.goto("dashboard")

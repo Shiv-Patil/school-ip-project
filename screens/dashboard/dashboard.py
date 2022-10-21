@@ -1,4 +1,4 @@
-from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 import utils, os
 from kivymd.app import MDApp
@@ -10,7 +10,7 @@ from kivy.clock import mainthread
 app = MDApp.get_running_app()
 
 
-class Dashboard(MDScreen):
+class Dashboard(Screen):
     dialog = None
     import_csv_container = None
     analysis_dialog = None

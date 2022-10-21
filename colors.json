@@ -304,8 +304,8 @@
         "A700": "000000"
     },
     "Light": {
-        "StatusBar": "E0E0E0",
-        "AppBar": "DDE0E8",
+        "StatusBar": "EDF0F8",
+        "AppBar": "FAFAFA",
         "Background": "EDF0F8",
         "CardsDialogs": "EFF5FA",
         "FlatButtonDown": "cccccc"
@@ -314,7 +314,7 @@
         "StatusBar": "000000",
         "AppBar": "1f1f1f",
         "Background": "121212",
-        "CardsDialogs": "212121",
+        "CardsDialogs": "121212",
         "FlatButtonDown": "999999"
     }
 }

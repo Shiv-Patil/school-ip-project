@@ -1,15 +1,15 @@
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import ListProperty, BooleanProperty
-from kivymd.uix.screenmanager import MDScreenManager
+from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.image import Image
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDIcon
-from kivy.uix.screenmanager import CardTransition
+from kivy.uix.screenmanager import SlideTransition as ScreenTransition
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.behaviors import ButtonBehavior
-from kivymd.uix.behaviors import HoverBehavior, CommonElevationBehavior
+from kivymd.uix.behaviors import HoverBehavior
 import importlib
 from kivy.utils import platform
 from widgets.dialog import Dialog
@@ -22,14 +22,13 @@ kv = """
 #:import os os
 #:import ScrollEffect kivy.effects.scroll.ScrollEffect
 
-<TitleBtn, ElevationTitleBtn>:
+<TitleBtn>:
     icon: "circle"
     pos_hint: {"center_x": .5, "center_y": .5}
     font_size: dp(20)
     size_hint: None, None
     size: self.texture_size
     elevation: 1
-    color: "black"
     draggable: False
     on_enter:
         Window.set_system_cursor('hand') if self.do_hover else 0
@@ -44,7 +43,7 @@ kv = """
     size: dp(256), dp(256)
 
 <TitleBar>:
-    md_bg_color: app.theme_cls.bg_dark
+    md_bg_color: "#DDE0E8" if app.theme_cls.theme_style == "Light" else "#1F1F1F"
     orientation: "horizontal"
     size_hint_y: None
     height: dp(69/2)
@@ -70,14 +69,11 @@ kv = """
             adaptive_size: True
             width: dp(80)
             padding: dp(7), 0
-            ElevationTitleBtn:
-                color: [0, 0.8, 0.14, 1]
-                on_release: Window.minimize()
-            ElevationTitleBtn:
-                color: [1, 0.75, 0, 1]
-                on_release: Window.maximize()
-            ElevationTitleBtn:
-                color: [1, 0.37, 0.3, 1]
+            TitleBtn:
+                icon: "theme-light-dark"
+                on_release: app.switch_theme()
+            TitleBtn:
+                icon: "window-close"
                 on_release: app.stop()
 
 <Root>:
@@ -107,9 +103,9 @@ class Root(MDBoxLayout):
 
         self._set_custom_titlebar()
 
-        self.manager = MDScreenManager()
+        self.manager = ScreenManager()
         self.add_widget(self.manager)
-        self.manager.transition = CardTransition()
+        self.manager.transition = ScreenTransition()
 
         Window.bind(on_key_up=self._handle_keyboard)
         self.bind(history=self.on_history_change)
@@ -141,12 +137,14 @@ class Root(MDBoxLayout):
             return
 
         if not self.manager.has_screen(screen_name):
+            self.show_loading()
             screen_object = getattr(
                 importlib.import_module(f"screens.{screen_name}.{screen_name}"),
                 self.SCREENS.get(screen_name),
             )()
             screen_object.name = screen_name
             self.manager.add_widget(screen_object)
+            self.hide_loading()
 
         if not _from_goback:
             self.history.append({"name": screen_name, "side": side})
@@ -205,10 +203,6 @@ class TitleBar(MDBoxLayout):
 
 
 class TitleBtn(ButtonBehavior, MDIcon, HoverBehavior):
-    do_hover = BooleanProperty(False)
-
-
-class ElevationTitleBtn(CommonElevationBehavior, TitleBtn):
     do_hover = BooleanProperty(True)
 
 

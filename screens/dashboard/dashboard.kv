@@ -12,19 +12,17 @@
 
         MDBoxLayout:
             orientation: "vertical"
-            spacing: dp(20)
-            padding: dp(20)
-            size_hint_max_x: dp(1000)
-            size_hint_max_y: dp(690)
+            spacing: dp(40)
+            padding: dp(40)
+            size_hint_max_x: dp(969)
+            size_hint_max_y: dp(569)
 
             MDBoxLayout:
                 orientation: "horizontal"
                 size_hint_min_y: dp(169)
-                spacing: dp(30)
+                spacing: dp(20)
 
                 MDAnchorLayout:
-                    padding: dp(20)
-                    md_bg_color: [.05, .05, .05, .069]
 
                     BaseCard:
                         size_hint: 1, 1
@@ -54,8 +52,6 @@
                                 on_release: root._show_btn_pressed()
 
                 MDAnchorLayout:
-                    size_hint_x: 0.8
-                    md_bg_color: [.05, .05, .05, .069]
 
                     BaseCard:
                         size_hint: 0.7, 0.6
@@ -83,12 +79,13 @@
             MDBoxLayout:
                 orientation: "horizontal"
                 spacing: dp(20)
+                size_hint_y: 0.6
 
                 MDAnchorLayout:
-                    md_bg_color: [.05, .05, .05, .069]
+                    anchor_y: "bottom"
 
                     BaseCard:
-                        size_hint: 0.7, 0.5
+                        size_hint: 0.7, 1
                         size_hint_min_x: student_btn.width + dp(40)
                         size_hint_min_y: student_btn.height + dp(40)
 
@@ -101,10 +98,10 @@
                                 on_release: root._analysis_btn_pressed()
 
                 MDAnchorLayout:
-                    md_bg_color: [.05, .05, .05, .069]
+                    anchor_y: "bottom"
 
                     BaseCard:
-                        size_hint: 0.7, 0.5
+                        size_hint: 0.7, 1
                         size_hint_min_x: class_btn.width + dp(40)
                         size_hint_min_y: class_btn.height + dp(40)
 

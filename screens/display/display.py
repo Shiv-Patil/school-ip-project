@@ -1,4 +1,4 @@
-from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 import utils, os
 from kivymd.uix.datatables import MDDataTable
@@ -13,13 +13,13 @@ from . import search_data, delete_data, edit_data
 app = MDApp.get_running_app()
 
 
-class Display(MDScreen):
+class Display(Screen):
     data_table = None
     menu = None
     delete_dialog = None
     edit_dialog = None
 
-    def on_enter(self, *_args):
+    def on_pre_enter(self, *_args):
         if not self.data_table:
             self._create_table()
         if not self.menu:
@@ -92,7 +92,6 @@ class Display(MDScreen):
             size_hint_max_x=1074,
             elevation=1,
             rows_num=100,
-            background_color_selected_cell=app.theme_cls.bg_normal,
             effect_cls=ScrollEffect,
             column_data=[
                 ("Id", dp(15), lambda d: int(d)),
