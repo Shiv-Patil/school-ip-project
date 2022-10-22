@@ -23,7 +23,7 @@ class Visualisation(Screen):
     yearmenu = None
     marks = None
 
-    def on_pre_enter(self, *_args):
+    def before_enter(self):
         if not self.yearmenu:
             self._create_dropdown()
         self._populate_years()
@@ -135,6 +135,7 @@ class Visualisation(Screen):
         plt.yticks(np.arange(0, 101, 5))
         plt.legend()
         plt.grid(axis="y", linestyle="-")
+        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -200,6 +201,7 @@ class Visualisation(Screen):
         plt.yticks(np.arange(0, 101, 5))
         plt.legend()
         plt.grid(axis="y", linestyle="-")
+        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -258,6 +260,7 @@ class Visualisation(Screen):
         plt.yticks(np.arange(0, 101, 5))
         plt.legend()
         plt.grid(axis="y", linestyle="-")
+        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -284,6 +287,7 @@ class Visualisation(Screen):
         plt.grid(True, axis="y", linestyle=":", which="both")
         plt.minorticks_on()
         plt.tick_params(axis="x", which="minor", bottom=False)
+        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -364,6 +368,7 @@ class Visualisation(Screen):
         plt.minorticks_on()
         plt.tick_params(axis="x", which="minor", bottom=False)
         plt.legend()
+        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()

@@ -23,7 +23,7 @@ class Analysis(Screen):
     resvalue = StringProperty("69")
     marks = None
 
-    def on_pre_enter(self, *_args):
+    def before_enter(self):
         if not self.yearmenu:
             self._create_dropdown()
         if not self.data_table:

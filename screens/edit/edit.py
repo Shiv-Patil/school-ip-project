@@ -31,7 +31,7 @@ class Edit(Screen):
     current_year_id = None
     current_year = None
 
-    def on_pre_enter(self, *_args):
+    def before_enter(self):
         self.years = {}
         self.populate_data_if_exists()
         add_year.init_addmodal(self)

@@ -16,7 +16,7 @@ class Dashboard(Screen):
     analysis_dialog = None
     count = StringProperty("0")
 
-    def on_pre_enter(self):
+    def before_enter(self):
         self.update_count()
 
     def update_count(self):

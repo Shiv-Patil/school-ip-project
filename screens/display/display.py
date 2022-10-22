@@ -19,7 +19,7 @@ class Display(Screen):
     delete_dialog = None
     edit_dialog = None
 
-    def on_pre_enter(self, *_args):
+    def before_enter(self):
         if not self.data_table:
             self._create_table()
         if not self.menu:

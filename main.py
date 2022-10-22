@@ -1,6 +1,10 @@
 import utils, importlib
 from kivymd.app import MDApp
+from kivy.core.window import Window
+from kivy.clock import Clock
+from kivy.uix.screenmanager import NoTransition
 from kivy.logger import Logger
+import configparser, os
 from threading import Thread
 from kivy.clock import mainthread
 from widgets.toast import Toast
@@ -17,10 +21,11 @@ class StudentAnalysis(MDApp):
     logger = Logger
     loading = False
     _toast = None
+    cfg = configparser.ConfigParser()
 
     def build(self):
         self.theme_cls.theme_style_switch_animation = True
-        self.theme_cls.theme_style = "Light"
+        self.set_theme()
         self.theme_cls.colors = utils.colors
         self.theme_cls.primary_palette = "Teal"
         self.theme_cls.material_style = "M3"
@@ -31,13 +36,29 @@ class StudentAnalysis(MDApp):
     def open_settings(self, *args):
         pass
 
+    def set_theme(self):
+        self.cfg.read(os.path.join(getattr(self, "user_data_dir"), "config.ini"))
+        if "APP" in self.cfg:
+            self.theme_cls.theme_style = self.cfg["APP"]["theme"]
+        else:
+            self.theme_cls.theme_style = "Light"
+            self.cfg["APP"] = {"theme": "Light"}
+
     def switch_theme(self):
         self.theme_cls.theme_style = (
             "Dark" if self.theme_cls.theme_style == "Light" else "Light"
         )
+        self.cfg["APP"] = {"theme": self.theme_cls.theme_style}
+        with open(
+            os.path.join(getattr(self, "user_data_dir"), "config.ini"), "w"
+        ) as configfile:
+            self.cfg.write(configfile)
 
     def on_start(self):
-        self.root.goto("dashboard")
+        def callback():
+            Clock.schedule_once(lambda dt: Window.show())
+
+        self.root.goto("dashboard", transition=NoTransition(), callback=callback)
 
     def start_task(
         self,

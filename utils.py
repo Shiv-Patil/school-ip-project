@@ -3,13 +3,6 @@ import platform, os, sys, json
 if platform.system() == "Windows":
     os.environ["KIVY_GL_BACKEND"] = "angle_sdl2"
 from kivy.config import Config
-from kivy.resources import resource_add_path
-import widgets
-
-Config.set("kivy", "exit_on_escape", "0")
-Config.set("graphics", "minimum_width", "800")
-Config.set("graphics", "minimum_height", "600")
-Config.set("input", "mouse", "mouse,disable_multitouch")
 
 
 def get_path(relative_path):
@@ -20,6 +13,10 @@ def get_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+
+Config.read(get_path("config.ini"))
+from kivy.resources import resource_add_path
+import widgets
 
 resource_add_path(get_path(os.path.join("screens", "dashboard")))
 resource_add_path(get_path(os.path.join("screens", "display")))

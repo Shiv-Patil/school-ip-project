@@ -11,7 +11,7 @@ from kivy.lang import Builder
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.behaviors import HoverBehavior
 import importlib
-from kivy.utils import platform
+from kivymd.material_resources import DEVICE_TYPE
 from widgets.dialog import Dialog
 from kivy.clock import Clock
 
@@ -105,7 +105,7 @@ class Root(MDBoxLayout):
 
         self.manager = ScreenManager()
         self.add_widget(self.manager)
-        self.manager.transition = ScreenTransition()
+        self.transition = ScreenTransition()
 
         Window.bind(on_key_up=self._handle_keyboard)
         self.bind(history=self.on_history_change)
@@ -127,7 +127,14 @@ class Root(MDBoxLayout):
     def hide_loading(self):
         self.loading_widget.dismiss()
 
-    def goto(self, screen_name, side="left", _from_goback=False):
+    def goto(
+        self,
+        screen_name,
+        side="left",
+        _from_goback=False,
+        transition=None,
+        callback=lambda: 0,
+    ):
         if screen_name not in self.SCREENS:
             app.logger.error("APP: Screen not found: " + screen_name)
             return
@@ -135,6 +142,8 @@ class Root(MDBoxLayout):
         if screen_name == self.manager.current:
             app.logger.warning("APP: Cannot switch to same screen: " + screen_name)
             return
+
+        self.manager.transition = self.transition if not transition else transition
 
         if not self.manager.has_screen(screen_name):
             self.show_loading()
@@ -152,7 +161,15 @@ class Root(MDBoxLayout):
         self.manager.transition.direction = side
 
         def _change_screen(self):
-            self.manager.current = screen_name
+            scrn = self.manager.get_screen(screen_name)
+            if hasattr(scrn, "before_enter"):
+                scrn.before_enter()
+
+            def _set_scrn():
+                self.manager.current = screen_name
+                callback()
+
+            Clock.schedule_once(lambda dt: _set_scrn(), 0.1)
 
         Clock.schedule_once(lambda dt: _change_screen(self))
 
@@ -182,13 +199,8 @@ class Root(MDBoxLayout):
 
     def _set_custom_titlebar(self):
         wid = self.title_bar
-        if platform == "linux":
-            if not Window.custom_titlebar:
-                Window.custom_titlebar = True
-                if Window.set_custom_titlebar(wid):
-                    return True
-            else:
-                app.logger.warning("App: Window: titlebar already added")
+        if DEVICE_TYPE == "desktop":
+            if Window.set_custom_titlebar(wid):
                 return True
 
         Window.custom_titlebar = False
