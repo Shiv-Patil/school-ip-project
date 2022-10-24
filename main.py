@@ -24,6 +24,7 @@ class StudentAnalysis(MDApp):
     cfg = configparser.ConfigParser()
 
     def build(self):
+        self.icon = os.path.join(utils.get_path("assets"), "icon.png")
         self.theme_cls.theme_style_switch_animation = True
         self.set_theme()
         self.theme_cls.colors = utils.colors

@@ -1,9 +1,10 @@
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import ListProperty, BooleanProperty
+from kivy.properties import ListProperty, BooleanProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.image import Image
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDIcon
 from kivy.uix.screenmanager import SlideTransition as ScreenTransition
 from kivymd.app import MDApp
@@ -11,7 +12,7 @@ from kivy.lang import Builder
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.behaviors import HoverBehavior
 import importlib
-from kivymd.material_resources import DEVICE_TYPE
+import platform
 from widgets.dialog import Dialog
 from kivy.clock import Clock
 
@@ -58,13 +59,14 @@ kv = """
             detect_visible: False
             on_release: app.root.goback()
     MDLabel:
-        text: "Student Analysis"
+        text: root.title_text
         font_style: "Subtitle2"
         halign: "center"
     MDAnchorLayout:
         anchor_x: "right"
         MDGridLayout:
-            cols: 3
+            id: title_btn_container
+            rows: 1
             spacing: dp(5)
             adaptive_size: True
             width: dp(80)
@@ -72,9 +74,17 @@ kv = """
             TitleBtn:
                 icon: "theme-light-dark"
                 on_release: app.switch_theme()
-            TitleBtn:
-                icon: "window-close"
-                on_release: app.stop()
+
+<TitleControlButtons>:
+    adaptive_size: True
+    spacing: dp(5)
+    rows: 1
+    TitleBtn:
+        icon: "window-minimize"
+        on_release: Window.minimize()
+    TitleBtn:
+        icon: "window-close"
+        on_release: app.stop()
 
 <Root>:
     orientation: "vertical"
@@ -168,6 +178,7 @@ class Root(MDBoxLayout):
             def _set_scrn():
                 self.manager.current = screen_name
                 callback()
+                self.title_bar.title_text = screen_name
 
             Clock.schedule_once(lambda dt: _set_scrn(), 0.1)
 
@@ -199,23 +210,25 @@ class Root(MDBoxLayout):
 
     def _set_custom_titlebar(self):
         wid = self.title_bar
-        if DEVICE_TYPE == "desktop":
+        if platform.system() == "Linux":
             if Window.set_custom_titlebar(wid):
+                self.title_bar.ids.title_btn_container.add_widget(TitleControlButtons())
                 return True
 
         Window.custom_titlebar = False
-        Window.remove_widget(wid)
-        self.size_hint_y = 1
-        app.logger.error("App: Window: setting custom titlebar not allowed")
         return False
 
 
 class TitleBar(MDBoxLayout):
-    pass
+    title_text = StringProperty("")
 
 
 class TitleBtn(ButtonBehavior, MDIcon, HoverBehavior):
     do_hover = BooleanProperty(True)
+
+
+class TitleControlButtons(MDGridLayout):
+    pass
 
 
 class LoadingImage(Image):

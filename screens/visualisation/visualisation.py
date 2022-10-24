@@ -99,6 +99,7 @@ class Visualisation(Screen):
         br3 = [x + BARWIDTH for x in br2]
         br4 = [x + BARWIDTH for x in br3]
 
+        plt.figure(num="Student marks per subject")
         plt.bar(
             br1,
             unit1,
@@ -135,7 +136,6 @@ class Visualisation(Screen):
         plt.yticks(np.arange(0, 101, 5))
         plt.legend()
         plt.grid(axis="y", linestyle="-")
-        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -180,6 +180,7 @@ class Visualisation(Screen):
         br1 = np.arange(len(exams))
         br2 = [x + BARWIDTH for x in br1]
 
+        plt.figure(num="Student marks vs class average marks examwise")
         plt.bar(
             br1,
             marks,
@@ -201,7 +202,6 @@ class Visualisation(Screen):
         plt.yticks(np.arange(0, 101, 5))
         plt.legend()
         plt.grid(axis="y", linestyle="-")
-        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -239,6 +239,7 @@ class Visualisation(Screen):
         br1 = np.arange(len(subjects))
         br2 = [x + BARWIDTH for x in br1]
 
+        plt.figure(num="Student marks vs class average marks subjectwise")
         plt.bar(
             br1,
             marks,
@@ -260,7 +261,6 @@ class Visualisation(Screen):
         plt.yticks(np.arange(0, 101, 5))
         plt.legend()
         plt.grid(axis="y", linestyle="-")
-        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -273,6 +273,7 @@ class Visualisation(Screen):
         x = np.arange(len(exams))
         y = self.marks.mean()
 
+        plt.figure(num="Student performance overall")
         plt.plot(x, y, "go--", linewidth=2, markersize=12)
 
         plt.xticks(np.arange(len(exams)), exams)
@@ -287,7 +288,6 @@ class Visualisation(Screen):
         plt.grid(True, axis="y", linestyle=":", which="both")
         plt.minorticks_on()
         plt.tick_params(axis="x", which="minor", bottom=False)
-        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()
@@ -304,6 +304,7 @@ class Visualisation(Screen):
         chem = self.marks.iloc[3]
         ip = self.marks.iloc[4]
 
+        plt.figure(num="Student performance subjectwise")
         plt.plot(
             x,
             maths,
@@ -368,7 +369,6 @@ class Visualisation(Screen):
         plt.minorticks_on()
         plt.tick_params(axis="x", which="minor", bottom=False)
         plt.legend()
-        plt.get_current_fig_manager().window.attributes("-type", "dialog")
 
         def showplot(*args):
             plt.show()

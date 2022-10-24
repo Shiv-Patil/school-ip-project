@@ -47,7 +47,7 @@ class ImportModalContainer(MDCard):
         app.start_task(
             lambda *args: filechooser.open_file(
                 on_selection=lambda f: self._file_selected(
-                    f[0] if isinstance(f, list) else f
+                    f[0] if (isinstance(f, list) and len(f)) else f
                 )
             ),
             _after,
@@ -57,6 +57,8 @@ class ImportModalContainer(MDCard):
 
     @mainthread
     def _file_selected(self, filepath: str):
+        if filepath == []:
+            return
         self._file_content_invalid = False
         self.upload_icon_color = [0.78, 0.78, 0.78, 1]
         self.filepath = ""
