@@ -80,7 +80,6 @@ class Display(Screen):
             items=menu_items,
             position="bottom",
             width_mult=2,
-            background_color="white",
             opening_time=0,
             elevation=1,
         )

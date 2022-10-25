@@ -81,7 +81,6 @@ class Visualisation(Screen):
             caller=self.ids.year,
             position="bottom",
             width_mult=2,
-            background_color="white",
             opening_time=0,
             elevation=1,
         )
