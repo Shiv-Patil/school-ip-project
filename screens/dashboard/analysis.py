@@ -26,7 +26,9 @@ class AnalysisContent(MDCard):
             self.parent.parent.dismiss()
             fullname = student[0][1] + " " + student[0][2] + " " + student[0][3]
             app.root.goto("analysis" if self.action == "Analysis" else "visualisation")
-            scrn = app.root.manager.get_screen("analysis" if self.action == "Analysis" else "visualisation")
+            scrn = app.root.manager.get_screen(
+                "analysis" if self.action == "Analysis" else "visualisation"
+            )
             scrn._student_id = str(_id)
             scrn._fullname = fullname
             return

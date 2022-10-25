@@ -1,8 +1,6 @@
 kivy
-kivymd
 pillow
 pandas
-olefile
 pandas_schema
 plyer
 matplotlib
