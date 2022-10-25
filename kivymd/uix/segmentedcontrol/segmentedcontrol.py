@@ -157,51 +157,6 @@ class MDSegmentedControl(MDRelativeLayout, ThemableBehavior):
             Called when the segment is activated.
     """
 
-    md_bg_color = ColorProperty([0, 0, 0, 0])
-    """
-    Background color of the segment panel in (r, g, b, a) or string format.
-
-    .. code-block:: kv
-
-        MDSegmentedControl:
-            md_bg_color: "brown"
-
-    .. image:: https://github.com/HeaTTheatR/KivyMD-data/raw/master/gallery/kivymddoc/md-segmented-control-md-bg-color.png
-        :align: center
-
-    :attr:`md_bg_color` is an :class:`~kivy.properties.ColorProperty`
-    and defaults to `[0, 0, 0, 0]`.
-    """
-
-    segment_color = ColorProperty([0, 0, 0, 0])
-    """
-    Color of the active segment in (r, g, b, a) or string format.
-
-    .. code-block:: kv
-
-        MDSegmentedControl:
-            md_bg_color: "brown"
-            segment_color: "red"
-
-    .. image:: https://github.com/HeaTTheatR/KivyMD-data/raw/master/gallery/kivymddoc/md-segmented-control-segment-color.png
-        :align: center
-
-    .. code-block:: kv
-
-        MDSegmentedControl:
-            md_bg_color: "brown"
-            segment_color: "red"
-
-            MDSegmentedControlItem:
-                text: "[color=fff]Male[/color]"
-
-    .. image:: https://github.com/HeaTTheatR/KivyMD-data/raw/master/gallery/kivymddoc/md-segmented-control-text-color.png
-        :align: center
-
-    :attr:`segment_color` is an :class:`~kivy.properties.ColorProperty`
-    and defaults to `[0, 0, 0, 0]`.
-    """
-
     segment_panel_height = NumericProperty("42dp")
     """
     Height of the segment panel.
@@ -291,11 +246,11 @@ class MDSegmentedControl(MDRelativeLayout, ThemableBehavior):
         Sets the colors of the panel and the switch if the colors are not set
         by the user.
         """
-
-        if self.md_bg_color == [0, 0, 0, 0]:
-            self.md_bg_color = self.theme_cls.bg_darkest
-        if self.segment_color == [0, 0, 0, 0]:
-            self.segment_color = self.theme_cls.bg_dark
+        pass
+        # if self.md_bg_color == [0, 0, 0, 0]:
+        #     self.md_bg_color = self.theme_cls.bg_darkest
+        # if self.segment_color == [0, 0, 0, 0]:
+        #     self.segment_color = self.theme_cls.bg_dark
 
     def animation_segment_switch(self, widget: MDSegmentedControlItem) -> None:
         """Animates the movement of the switch."""

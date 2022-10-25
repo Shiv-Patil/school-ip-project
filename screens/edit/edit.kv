@@ -6,7 +6,7 @@
     font_size: sp(18)
     size: self.texture_size
     pos_hint: {"center_x": 0.5, "center_y": 0.5}
-    color: "#434343"
+    color: app.theme_cls.text_color
 
 <Edit>:
     name: 'edit'
@@ -163,7 +163,7 @@
 <YearContainer>:
     size_hint: 1, None
     height: self.minimum_height
-    md_bg_color: "#FBFBFB"
+    md_bg_color: app.theme_cls.bg_dark
     orientation: "vertical"
     elevation: 1
     spacing: dp(10)
@@ -177,21 +177,18 @@
         LimitingTextField:
             id: std_field
             hint_text: "Standard"
-            mode: "rectangle"
             max_chars: 3
 
         LimitingTextField:
             id: div_field
             hint_text: "Division"
-            mode: "rectangle"
             max_chars: 10
 
         LimitingTextField:
             id: rollno_field
             hint_text: "Roll number"
             input_filter: "int"
-            mode: "rectangle"
-            max_chars: 2
+            max_chars: 6
 
     MyLabel:
         font_size: sp(20)

@@ -8,13 +8,14 @@
 <MDSegmentedControl>
     size_hint: None, None
     size: segment_panel.size
+    md_bg_color: app.theme_cls.bg_dark
 
     SegmentSwitch:
         id: segment_switch
         height: segment_panel.height - dp(12)
         pos_hint: {"center_y": .5}
         x: root._segment_switch_x
-        md_bg_color: root.segment_color
+        md_bg_color: app.theme_cls.bg_darkest
         elevation: 2
         _radius: root.radius[0] - 4
         width:
