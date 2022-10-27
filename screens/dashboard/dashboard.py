@@ -48,7 +48,7 @@ class Dashboard(Screen):
 
         app.start_task(
             lambda *args: filechooser.save_file(
-                on_selection=lambda f: _save_file(f[0]),
+                on_selection=lambda f: _save_file(f[0]) if f else 0,
                 filters=["*.csv"],
             ),
         )

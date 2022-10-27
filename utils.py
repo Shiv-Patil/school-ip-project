@@ -1,7 +1,4 @@
 import platform, os, sys, json
-
-if platform.system() == "Windows":
-    os.environ["KIVY_GL_BACKEND"] = "angle_sdl2"
 from kivy.config import Config
 
 
@@ -15,6 +12,8 @@ def get_path(relative_path):
 
 
 Config.read(get_path("config.ini"))
+Config.remove_option("input", "wm_pen")
+Config.remove_option("input", "wm_touch")
 from kivy.resources import resource_add_path
 import widgets
 

@@ -168,7 +168,7 @@ class Visualisation(Screen):
             curr = avgmarks.get(row[2], 0)
             next = pd.Series(row[3:]).mean()
             if np.isnan(next):
-                continue
+                avgmarks[row[2]] = curr if curr else np.nan
             avgmarks[row[2]] = round(
                 (((next + curr) / 2.0) if curr else next),
                 2,
@@ -227,7 +227,7 @@ class Visualisation(Screen):
 
         avgmarks = (
             *map(
-                lambda x: round(x, 2),
+                lambda x: round(x, 2) if x else np.nan,
                 app.database.execute_query(
                     f"SELECT AVG(mathematics), AVG(english), AVG(phyiscs), AVG(chemistry), AVG(informatics_practices) FROM marks WHERE academic_year IN ({','.join(['?']*len(students))})",
                     students,
@@ -276,10 +276,18 @@ class Visualisation(Screen):
         plt.plot(x, y, "go--", linewidth=2, markersize=12)
 
         plt.xticks(np.arange(len(exams)), exams)
+
+        start = max(-round(-self.marks.min().min(), -1) - 10, 0)
+        if np.isnan(start):
+            start = 0
+        stop = min(round(self.marks.max().max(), -1) + 11, 101)
+        if np.isnan(stop):
+            stop = 101
+
         plt.yticks(
             np.arange(
-                max(-round(-self.marks.mean().min(), -1) - 10, 0),
-                min(round(self.marks.mean().max(), -1) + 11, 101),
+                start,
+                stop,
                 5,
             )
         )
@@ -356,10 +364,18 @@ class Visualisation(Screen):
         )
 
         plt.xticks(np.arange(len(exams)), exams)
+
+        start = max(-round(-self.marks.min().min(), -1) - 10, 0)
+        if np.isnan(start):
+            start = 0
+        stop = min(round(self.marks.max().max(), -1) + 11, 101)
+        if np.isnan(stop):
+            stop = 101
+
         plt.yticks(
             np.arange(
-                max(-round(-self.marks.min().min(), -1) - 10, 0),
-                min(round(self.marks.max().max(), -1) + 11, 101),
+                start,
+                stop,
                 5,
             )
         )
