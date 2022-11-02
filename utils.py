@@ -12,8 +12,6 @@ def get_path(relative_path):
 
 
 Config.read(get_path("config.ini"))
-Config.remove_option("input", "wm_pen")
-Config.remove_option("input", "wm_touch")
 from kivy.resources import resource_add_path
 import widgets
 
