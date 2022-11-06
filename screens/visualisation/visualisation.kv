@@ -39,6 +39,11 @@
                     size_hint_y: None
                     text: "Name: " + root._fullname
                     height: self.texture_size[1]
+                
+                MDLabel:
+                    size_hint_y: None
+                    text: "Class: " + root._std_div
+                    height: self.texture_size[1]
         
         AnchorLayout:
             size_hint_y: None
@@ -73,7 +78,7 @@
 
             GridLayout:
                 size_hint_max_x: dp(1000)
-                cols: 3
+                cols: 5
                 size_hint_y: None
                 height: self.minimum_height
 
@@ -147,4 +152,38 @@
                             pos_hint: {"center_x": 0.5}
                             on_release:
                                 root.line_perf_subwise()
+                
+                MDSeparator:
+                    orientation: "vertical"
+
+                AnchorLayout:
+                    anchor_y: "top"
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(20)
+
+                        MDLabel:
+                            size_hint_y: None
+                            text: "Pie charts"
+                            halign: "center"
+                            font_style: "H5"
+                            height: self.texture_size[1]
+                            padding: 0, dp(5)
+
+                        MDRoundFlatButton:
+                            text: "Class performance\noverall"
+                            line_width: 1.069
+                            pos_hint: {"center_x": 0.5}
+                            on_release:
+                                root.pie_class_perf_overall()
+
+                        MDRoundFlatButton:
+                            text: "Class performace\nsubjectwise"
+                            line_width: 1.069
+                            pos_hint: {"center_x": 0.5}
+                            on_release:
+                                root.pie_class_perf_subwise()
         

@@ -39,6 +39,11 @@
                     size_hint_y: None
                     text: "Name: " + root._fullname
                     height: self.texture_size[1]
+                
+                MDLabel:
+                    size_hint_y: None
+                    text: "Class: " + root._std_div
+                    height: self.texture_size[1]
 
         AnchorLayout:
             size_hint_y: None
@@ -174,36 +179,71 @@
                                 root.resvalue = str(round(root.marks.mean(1).IP, 2)) + " %"
 
                         MDRoundFlatButton:
-                            text: "Get overall grade"
+                            text: "Get overall student grade"
                             line_width: 1.069
                             on_release:
-                                root.resname = "Overall grade"
-                                root.resvalue = root.get_grade(round(root.marks.mean().mean(), 2))
+                                root.resname = "Overall student grade"
+                                root.resvalue = root.get_grade(root.marks.mean().mean())
 
                         MDRoundFlatButton:
-                            text: "Get unit 1 grade"
+                            text: "Get unit 1 student grade"
                             line_width: 1.069
                             on_release:
-                                root.resname = "Unit1 grade"
-                                root.resvalue = root.get_grade(round(root.marks.mean().unit1, 2))
+                                root.resname = "Unit 1 student grade"
+                                root.resvalue = root.get_grade(root.marks.mean().unit1)
 
                         MDRoundFlatButton:
-                            text: "Get term 1 grade"
+                            text: "Get term 1 student grade"
                             line_width: 1.069
                             on_release:
-                                root.resname = "Term1 grade"
-                                root.resvalue = root.get_grade(round(root.marks.mean().term1, 2))
+                                root.resname = "Term 1 student grade"
+                                root.resvalue = root.get_grade(root.marks.mean().term1)
 
                         MDRoundFlatButton:
-                            text: "Get unit 2 grade"
+                            text: "Get unit 2 student grade"
                             line_width: 1.069
                             on_release:
-                                root.resname = "Unit2 grade"
-                                root.resvalue = root.get_grade(round(root.marks.mean().unit2, 2))
+                                root.resname = "Unit 2 student grade"
+                                root.resvalue = root.get_grade(root.marks.mean().unit2)
 
                         MDRoundFlatButton:
-                            text: "Get term 2 grade"
+                            text: "Get term 2 student grade"
                             line_width: 1.069
                             on_release:
-                                root.resname = "Term2 grade"
-                                root.resvalue = root.get_grade(round(root.marks.mean().term2, 2))
+                                root.resname = "Term 2 student grade"
+                                root.resvalue = root.get_grade(root.marks.mean().term2)
+                        
+                        MDRoundFlatButton:
+                            text: "Get overall class grade"
+                            line_width: 1.069
+                            on_release:
+                                root.resname = "Overall class grade"
+                                root.resvalue = root._class_grades.get("overall", "NA")
+
+                        MDRoundFlatButton:
+                            text: "Get unit 1 class grade"
+                            line_width: 1.069
+                            on_release:
+                                root.resname = "Unit 1 class grade"
+                                root.resvalue = root._class_grades.get("unit1", "NA")
+
+                        MDRoundFlatButton:
+                            text: "Get term 1 class grade"
+                            line_width: 1.069
+                            on_release:
+                                root.resname = "Term 1 class grade"
+                                root.resvalue = root._class_grades.get("term1", "NA")
+
+                        MDRoundFlatButton:
+                            text: "Get unit 2 class grade"
+                            line_width: 1.069
+                            on_release:
+                                root.resname = "Unit 2 class grade"
+                                root.resvalue = root._class_grades.get("unit2", "NA")
+
+                        MDRoundFlatButton:
+                            text: "Get term 2 class grade"
+                            line_width: 1.069
+                            on_release:
+                                root.resname = "Term 2 class grade"
+                                root.resvalue = root._class_grades.get("term2", "NA")

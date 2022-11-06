@@ -5,6 +5,7 @@ from kivy.effects.scroll import ScrollEffect
 import utils, os
 from kivy.clock import Clock
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import pandas as pd
 import numpy as np
 from kivy.metrics import dp
@@ -19,6 +20,7 @@ plt.style.use("fivethirtyeight")
 class Visualisation(Screen):
     _student_id = StringProperty("")
     _fullname = StringProperty("")
+    _std_div = StringProperty("")
     _year_id = StringProperty("")
     yearmenu = None
     marks = None
@@ -36,10 +38,11 @@ class Visualisation(Screen):
         if not isinstance(years, list):
             return app.root.goback()
 
-        def set_item(text_item, yearid):
+        def set_item(text_item, yearid, std, div):
             Clock.schedule_once(lambda dt: self.yearmenu.dismiss(), 0.169)
             Clock.schedule_once(lambda dt: self.ids.year.set_item(text_item), 0.1)
             self._year_id = yearid
+            self._std_div = std + " " + (div if div else "")
             exams = app.database.execute_query(
                 "SELECT * from marks WHERE academic_year = ?", (yearid,)
             )
@@ -56,7 +59,7 @@ class Visualisation(Screen):
                 index=("Maths", "English", "Physics", "Chemistry", "IP"),
             ).fillna(value=np.nan)
 
-        set_item(str(years[0][5]), str(years[0][0]))
+        set_item(str(years[0][5]), str(years[0][0]), years[0][2], years[0][3])
 
         menu_items = []
         for year in years:
@@ -65,7 +68,9 @@ class Visualisation(Screen):
                     "viewclass": "OneLineListItem",
                     "text": str(year[5]),
                     "height": dp(52),
-                    "on_release": lambda x=str(year[5]), y=str(year[0]): set_item(x, y),
+                    "on_release": lambda x=str(year[5]), y=str(year[0]), std=year[
+                        2
+                    ], div=year[3]: set_item(x, y, std, div),
                 }
             )
 
@@ -384,6 +389,228 @@ class Visualisation(Screen):
         plt.minorticks_on()
         plt.tick_params(axis="x", which="minor", bottom=False)
         plt.legend()
+
+        def showplot(*args):
+            plt.show()
+            app.root.hide_loading()
+
+        app.root.show_loading(onopen=showplot)
+
+    def pie_class_perf_overall(self):
+        fig, axes = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(12, 8))
+        args = app.database.execute_query(
+            "SELECT class, division, year_start FROM academic_year WHERE id = ?",
+            (self._year_id,),
+        )[0]
+        students = [
+            i[0]
+            for i in app.database.execute_query(
+                "SELECT id FROM academic_year WHERE class = ? AND division = ? AND year_start = ?",
+                args,
+            )
+        ]
+        buckets = dict(
+            zip(
+                ("unit1", "term1", "unit2", "term2", "overall"),
+                map(
+                    lambda d: dict(
+                        zip(utils.grades.values(), (0,) * len(utils.grades))
+                    ).copy(),
+                    range(5),
+                ),
+            )
+        )
+
+        overalls = {}
+
+        for row in app.database.execute_query(
+            f"SELECT * FROM marks WHERE academic_year IN ({','.join(['?']*len(students))})",
+            students,
+        ):
+            exam_avg = pd.Series(row[3:]).mean()
+            if overalls.get(row[1], None) and not np.isnan(exam_avg):
+                overalls[row[1]] = (overalls.get(row[1]) + exam_avg) / 2.0
+            elif not np.isnan(exam_avg):
+                overalls[row[1]] = exam_avg
+            if not np.isnan(exam_avg):
+                buckets[row[2]][utils.get_grade(exam_avg)] += 1
+
+        for p in overalls.values():
+            buckets["overall"][utils.get_grade(p)] += 1
+
+        for bucket in buckets.values():
+            for grade, num in list(bucket.items()):
+                if num == 0:
+                    del bucket[grade]
+
+        axes[0, 0].set_title("Unit 1")
+        axes[0, 0].pie(
+            buckets.get("unit1").values(),
+            autopct=lambda n: round(n * sum(buckets.get("unit1").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("unit1").keys()],
+        )
+
+        axes[0, 1].set_title("Term 1")
+        axes[0, 1].pie(
+            buckets.get("term1").values(),
+            autopct=lambda n: round(n * sum(buckets.get("term1").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("term1").keys()],
+        )
+
+        axes[1, 0].set_title("Unit 2")
+        axes[1, 0].pie(
+            buckets.get("unit2").values(),
+            autopct=lambda n: round(n * sum(buckets.get("unit2").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("unit2").keys()],
+        )
+
+        axes[1, 1].set_title("Term 2")
+        axes[1, 1].pie(
+            buckets.get("term2").values(),
+            autopct=lambda n: round(n * sum(buckets.get("term2").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("term2").keys()],
+        )
+        fig.suptitle("Class performance per exam")
+
+        patchList = []
+        for key in utils.pie_colors:
+            data_key = mpatches.Patch(color=utils.pie_colors[key], label=key)
+            patchList.append(data_key)
+
+        fig.legend(handles=patchList)
+
+        plt.figure()
+        plt.tight_layout(pad=0)
+        plt.pie(
+            buckets.get("overall").values(),
+            labels=buckets.get("overall").keys(),
+            labeldistance=None,
+            autopct=lambda n: round(n * sum(buckets.get("overall").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("overall").keys()],
+        )
+        plt.title("Class performance overall")
+        plt.legend(bbox_to_anchor=(1.03, 1))
+
+        def showplot(*args):
+            plt.show()
+            app.root.hide_loading()
+
+        app.root.show_loading(onopen=showplot)
+
+    def pie_class_perf_subwise(self):
+        args = app.database.execute_query(
+            "SELECT class, division, year_start FROM academic_year WHERE id = ?",
+            (self._year_id,),
+        )[0]
+        students = [
+            i[0]
+            for i in app.database.execute_query(
+                "SELECT id FROM academic_year WHERE class = ? AND division = ? AND year_start = ?",
+                args,
+            )
+        ]
+        buckets = dict(
+            zip(
+                ("maths", "english", "physics", "chemistry", "ip"),
+                map(
+                    lambda d: dict(
+                        zip(utils.grades.values(), (0,) * len(utils.grades))
+                    ).copy(),
+                    range(5),
+                ),
+            )
+        )
+
+        sub_overalls = {}
+
+        for row in app.database.execute_query(
+            f"SELECT * FROM marks WHERE academic_year IN ({','.join(['?']*len(students))})",
+            students,
+        ):
+            for sub, marks in zip(
+                ("maths", "english", "physics", "chemistry", "ip"), row[3:]
+            ):
+                if marks:
+                    if sub_overalls.get(row[1]) and sub_overalls.get(row[1]).get(sub):
+                        sub_overalls[row[1]][sub].append(marks)
+                        continue
+                    elif not sub_overalls.get(row[1], None):
+                        sub_overalls[row[1]] = {}
+                    sub_overalls[row[1]][sub] = [marks]
+
+        for student_sub_marks in sub_overalls.values():
+            for sub, marks in student_sub_marks.items():
+                buckets[sub][utils.get_grade(sum(marks) / len(marks))] += 1
+
+        for bucket in buckets.values():
+            for grade, num in list(bucket.items()):
+                if num == 0:
+                    del bucket[grade]
+
+        plt.figure("Maths")
+        plt.title("Class performance in Maths")
+        plt.pie(
+            buckets.get("maths").values(),
+            labels=buckets.get("maths").keys(),
+            labeldistance=None,
+            autopct=lambda n: round(n * sum(buckets.get("maths").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("maths").keys()],
+        )
+        plt.legend(bbox_to_anchor=(1.03, 1))
+
+        plt.figure("English")
+        plt.title("Class performance in English")
+        plt.pie(
+            buckets.get("english").values(),
+            labels=buckets.get("english").keys(),
+            labeldistance=None,
+            autopct=lambda n: round(n * sum(buckets.get("english").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("english").keys()],
+        )
+        plt.legend(bbox_to_anchor=(1.03, 1))
+
+        plt.figure("Physics")
+        plt.title("Class performance in Physics")
+        plt.pie(
+            buckets.get("physics").values(),
+            labels=buckets.get("physics").keys(),
+            labeldistance=None,
+            autopct=lambda n: round(n * sum(buckets.get("physics").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("physics").keys()],
+        )
+        plt.legend(bbox_to_anchor=(1.03, 1))
+
+        plt.figure("Chemistry")
+        plt.title("Class performance in Chemistry")
+        plt.pie(
+            buckets.get("chemistry").values(),
+            labels=buckets.get("chemistry").keys(),
+            labeldistance=None,
+            autopct=lambda n: round(n * sum(buckets.get("chemistry").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("chemistry").keys()],
+        )
+        plt.legend(bbox_to_anchor=(1.03, 1))
+
+        plt.figure("IP")
+        plt.title("Class performance in IP")
+        plt.pie(
+            buckets.get("ip").values(),
+            labels=buckets.get("ip").keys(),
+            labeldistance=None,
+            autopct=lambda n: round(n * sum(buckets.get("ip").values()) / 100),
+            pctdistance=1.14,
+            colors=[utils.pie_colors[key] for key in buckets.get("ip").keys()],
+        )
+        plt.legend(bbox_to_anchor=(1.03, 1))
 
         def showplot(*args):
             plt.show()

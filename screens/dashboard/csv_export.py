@@ -27,7 +27,7 @@ def export_csv(app, file):
             marks = app.database.execute_query(
                 "SELECT * FROM marks WHERE academic_year = ?", (year[0],)
             )
-            if not years or not isinstance(years, list):
+            if not marks or not isinstance(marks, list):
                 app.logger.error("CSV Export: Student has no marks in an year")
                 continue
             for exam_marks in marks:
