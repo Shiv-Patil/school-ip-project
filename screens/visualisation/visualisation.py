@@ -170,14 +170,15 @@ class Visualisation(Screen):
             f"SELECT * FROM marks WHERE academic_year IN ({','.join(['?']*len(students))})",
             students,
         ):
-            curr = avgmarks.get(row[2], 0)
+            curr = avgmarks.get(row[2])
             next = pd.Series(row[3:]).mean()
-            if np.isnan(next):
-                avgmarks[row[2]] = curr if curr else np.nan
-            avgmarks[row[2]] = round(
-                (((next + curr) / 2.0) if curr else next),
-                2,
-            )
+            if not np.isnan(next) and not curr is None:
+                avgmarks[row[2]].append(next)
+            elif curr is None:
+                avgmarks[row[2]] = []
+
+        for _exam, _marks in list(avgmarks.items()):
+            avgmarks[_exam] = round(sum(_marks) / len(_marks), 2) if len(_marks) else 0
 
         avgmarks = pd.Series(avgmarks)
 
